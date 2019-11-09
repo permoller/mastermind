@@ -3,7 +3,7 @@ namespace Mastermind.GameLogic
     using System;
     using System.Collections.Generic;
 
-    public class Game : IGame
+    public class Game
     {
         private readonly Line _SecretLine;
 

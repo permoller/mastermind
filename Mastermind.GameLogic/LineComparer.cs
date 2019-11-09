@@ -2,7 +2,7 @@ namespace Mastermind.GameLogic
 {
     using System;
 
-    public class LineComparer : ILineComparer
+    public class LineComparer
     {
         public Result Compare(Line guess, Line secret)
         {
