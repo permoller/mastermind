@@ -1,57 +1,30 @@
-﻿namespace Mastermind
+﻿namespace Mastermind.ConsoleApp
 {
     using Mastermind.GameLogic;
     using System;
-    using System.Collections.Generic;
 
     public class Program
     {
         public static void Main()
         {
-            var game = new Game(8, 4);
-            Result result;
-            Line guess;
-            do
-            {
-                guess = ReadLine(game);
-                result = game.Guess(guess);
-                WriteResult(result);
-            } while (!game.AreAllPinsCorrect(result));
-            Console.Write("Number of guesses: ");
-            Console.WriteLine(game.GuessesAndResults.Count);
+            var numberOfPins = GetNumber("Number of different pins", 1, 9, 8);
+            var numberOfPinsPerLine = GetNumber("Number of pins per line", 1, 9, 4);
+            var maxNumberOfGuesses = GetNumber("Max number of guesses", 1, 100, 10);
+
+            var game = new Game(numberOfPins, numberOfPinsPerLine, maxNumberOfGuesses);
+            var player = new ConsolePlayer(new ConsoleWrapper());
+            var victory = game.Play(player);
         }
-        private static void WriteResult(Result result)
+
+        private static int GetNumber(string message, int min, int max, int @default)
         {
-            Console.Write(" | ");
-            Console.Write(result.NumberOfCorrectPins);
-            Console.WriteLine(" (" + result.NumberOfCorrectColoredPinsInWrongPosition + ")");
-        }
-        private static Line ReadLine(Game game)
-        {
-            Console.Write("Guess:");
-            var pins = new List<Pin>();
-            for (var i = 0; i < game.NumberOfPinsPerLine; i++)
+            Console.Write($"{message} ({min} - {max}) default is {@default}: ");
+            if (!int.TryParse(Console.ReadLine(), out var number) || number < min || number > max)
             {
-                pins.Add(ReadPin(game));
+                Console.WriteLine("Using default value of " + @default);
+                number = @default;
             }
-            return new Line(pins.ToArray());
-        }
-        private static Pin ReadPin(Game game)
-        {
-            Console.Write(" ");
-            while (true)
-            {
-                var keyInfo = Console.ReadKey();
-                var c = keyInfo.KeyChar;
-                if (int.TryParse(c.ToString(), out var number))
-                {
-                    if (number >= 0 && number < game.NumberOfPins)
-                    {
-                        return new Pin(number);
-                    }
-                }
-                Console.CursorLeft--;
-            }
+            return number;
         }
     }
 }
