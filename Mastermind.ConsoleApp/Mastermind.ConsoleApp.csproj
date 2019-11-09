@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
+    <ProjectReference Include="..\Mastermind.GameLogic\Mastermind.GameLogic.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
