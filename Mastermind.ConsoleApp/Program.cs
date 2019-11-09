@@ -1,4 +1,5 @@
-﻿namespace Mastermind.ConsoleApp
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Mastermind.ConsoleApp.Tests")]
+namespace Mastermind.ConsoleApp
 {
     using Mastermind.GameLogic;
     using System;

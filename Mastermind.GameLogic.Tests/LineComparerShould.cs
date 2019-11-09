@@ -1,7 +1,7 @@
-using Xunit;
-
 namespace Mastermind.GameLogic.Tests
 {
+    using Xunit;
+
     public class LineComparerShould
     {
         [Theory]

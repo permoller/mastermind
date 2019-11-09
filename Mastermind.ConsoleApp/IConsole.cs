@@ -10,6 +10,6 @@ namespace Mastermind.ConsoleApp
         int CursorLeft { get; set; }
         int CursorTop { get; set; }
 
-        void SetCursorPosition(int top, int left);
+        Action<int, int> SetCursorPosition { get; }
     }
 }

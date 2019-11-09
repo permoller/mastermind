@@ -14,9 +14,7 @@ namespace Mastermind.ConsoleApp
 
         public int CursorTop { get => Console.CursorTop; set => Console.CursorTop = value; }
 
-        public void SetCursorPosition(int left, int top)
-        {
-            Console.SetCursorPosition(left, top);
-        }
+        public Action<int, int> SetCursorPosition => Console.SetCursorPosition;
+
     }
 }
