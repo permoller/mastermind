@@ -7,7 +7,7 @@ namespace Mastermind.GameLogic
     {
         private readonly Line _SecretLine;
 
-        private readonly ILineComparer _LineComparer;
+        private readonly LineComparer _LineComparer;
 
         private readonly List<GuessAndResult> _GuessesAndResults = new List<GuessAndResult>();
         private static Line RandomLine(int numberOfPins, int numberOfPinsPerLine)

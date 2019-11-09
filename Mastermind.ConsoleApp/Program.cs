@@ -26,7 +26,7 @@
             Console.Write(result.NumberOfCorrectPins);
             Console.WriteLine(" (" + result.NumberOfCorrectColoredPinsInWrongPosition + ")");
         }
-        private static Line ReadLine(IGame game)
+        private static Line ReadLine(Game game)
         {
             Console.Write("Guess:");
             var pins = new List<Pin>();
@@ -36,7 +36,7 @@
             }
             return new Line(pins.ToArray());
         }
-        private static Pin ReadPin(IGame game)
+        private static Pin ReadPin(Game game)
         {
             Console.Write(" ");
             while (true)
