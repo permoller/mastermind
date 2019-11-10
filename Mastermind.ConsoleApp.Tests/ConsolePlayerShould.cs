@@ -32,7 +32,7 @@ namespace Mastermind.ConsoleApp.Tests
             var result = game.Play(consolePlayer);
 
             // Assert
-            Assert.True(result);
+            Assert.True(result.WasTheSecretGuessed);
             Assert.Contains(WinText, console.Output);
             Assert.DoesNotContain(LoseText, console.Output);
             Assert.Contains(ResultText1, console.Output);
@@ -54,7 +54,7 @@ namespace Mastermind.ConsoleApp.Tests
             var result = game.Play(consolePlayer);
 
             // Assert
-            Assert.False(result);
+            Assert.False(result.WasTheSecretGuessed);
             Assert.DoesNotContain(WinText, console.Output);
             Assert.Contains(LoseText, console.Output);
             Assert.Contains(secretText, console.Output);

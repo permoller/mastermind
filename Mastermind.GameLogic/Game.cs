@@ -4,15 +4,15 @@ namespace Mastermind.GameLogic
     using System.Linq;
     using System.Collections.Generic;
 
-    public class Game
+    public class Game : IGame
     {
         public int NumberOfPins { get; }
 
         public int NumberOfPinsPerLine { get; }
 
-        public IReadOnlyList<GuessAndResult> GuessesAndResults => _GuessesAndResults;
-
         public int MaxNumberOfGuesses { get; }
+
+        public IReadOnlyList<GuessAndResult> GuessesAndResults => _GuessesAndResults;
 
         private readonly Line _SecretLine;
 
@@ -54,7 +54,7 @@ namespace Mastermind.GameLogic
                 throw new ArgumentException("Pin is out of range");
         }
 
-        public bool Play(Player player)
+        public GamePlayResult Play(Player player)
         {
             _GuessesAndResults.Clear();
             player.BeginGame(this);
@@ -68,8 +68,9 @@ namespace Mastermind.GameLogic
                 _GuessesAndResults.Add(new GuessAndResult(guess, result));
             } while (result.NumberOfCorrectPins != NumberOfPinsPerLine && _GuessesAndResults.Count < MaxNumberOfGuesses);
             var wasTheSecretGuessed = result.NumberOfCorrectPins == NumberOfPinsPerLine;
-            player.EndGame(this, wasTheSecretGuessed, _SecretLine);
-            return wasTheSecretGuessed;
+            var gameResult = new GamePlayResult(wasTheSecretGuessed, _SecretLine);
+            player.EndGame(this, gameResult);
+            return gameResult;
         }
     }
 }
