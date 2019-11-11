@@ -4,14 +4,14 @@
     using System.Linq;
     using Mastermind.GameLogic;
     using Xunit;
-    public class RandomNextGuessPlayerShould
+    public class RandomGuessAmongPosibleSolutionsPlayerShould
     {
 
         [Fact]
         public void WinGame()
         {
             // Arrange
-            var player = new RandomNextGuessPlayer();
+            var player = new RandomGuessAmongPosibleSolutionsPlayer();
             var guessesAndResults = new List<GuessAndResult>();
             var game = new GameMock(8, 4, 10, guessesAndResults);
 
@@ -30,7 +30,7 @@
         public void LooseGame()
         {
             // Arrange
-            var player = new RandomNextGuessPlayer();
+            var player = new RandomGuessAmongPosibleSolutionsPlayer();
             var guessesAndResults = new List<GuessAndResult>();
             var game = new GameMock(9, 4, 2, guessesAndResults);
 
@@ -52,7 +52,7 @@
         {
             // Arrange
             var game = new Game(8, 4, 10);
-            var player = new RandomNextGuessPlayer();
+            var player = new RandomGuessAmongPosibleSolutionsPlayer();
 
             // Act
             game.Play(player);

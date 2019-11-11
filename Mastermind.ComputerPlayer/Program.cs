@@ -8,7 +8,7 @@
         static void Main(string[] args)
         {
             var game = new Game(8, 4, 10);
-            var player = new RandomNextGuessPlayer();
+            var player = new RandomGuessAmongPosibleSolutionsPlayer();
             var result = game.Play(player);
             PrintGame(game, result);
         }
