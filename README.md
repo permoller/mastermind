@@ -5,5 +5,5 @@ Implementation of the code breaker game Mastermind.
 
 __Directories:__
 - __Mastermind.GameLogic:__ Model classes and line comparing algorithm for the game.
-- __Mastermind.ConsoleApp:__ Console application for playing the game manually.
+- __Mastermind.HumanPlayer:__ Console application for playing the game manually.
 - __Mastermind.ComputerPlayer:__ Console application for playing the game using different algorithms.

@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.GameLogic", "Mas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.GameLogic.Tests", "Mastermind.GameLogic.Tests\Mastermind.GameLogic.Tests.csproj", "{F916832F-2E55-44B1-8FB6-5A3976BF5D7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.ConsoleApp", "Mastermind.ConsoleApp\Mastermind.ConsoleApp.csproj", "{932899D6-F980-4DA5-9B25-2CA9305EFE43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.HumanPlayer", "Mastermind.HumanPlayer\Mastermind.HumanPlayer.csproj", "{932899D6-F980-4DA5-9B25-2CA9305EFE43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.ConsoleApp.Tests", "Mastermind.ConsoleApp.Tests\Mastermind.ConsoleApp.Tests.csproj", "{98D37D6A-131E-4A9A-A7EF-A1C99022CACD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.HumanPlayer.Tests", "Mastermind.HumanPlayer.Tests\Mastermind.HumanPlayer.Tests.csproj", "{98D37D6A-131E-4A9A-A7EF-A1C99022CACD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.ComputerPlayer", "Mastermind.ComputerPlayer\Mastermind.ComputerPlayer.csproj", "{5FC4E803-A18D-415F-BDD9-1492A793B2E6}"
 EndProject

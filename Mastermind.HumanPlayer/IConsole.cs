@@ -1,6 +1,6 @@
 using System;
 
-namespace Mastermind.ConsoleApp
+namespace Mastermind.HumanPlayer
 {
     internal interface IConsole
     {

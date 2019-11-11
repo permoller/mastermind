@@ -1,4 +1,4 @@
-namespace Mastermind.ConsoleApp
+namespace Mastermind.HumanPlayer
 {
     using System;
 

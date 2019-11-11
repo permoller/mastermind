@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mastermind.ConsoleApp\Mastermind.ConsoleApp.csproj" />
+    <ProjectReference Include="..\Mastermind.HumanPlayer\Mastermind.HumanPlayer.csproj" />
   </ItemGroup>
 
 </Project>

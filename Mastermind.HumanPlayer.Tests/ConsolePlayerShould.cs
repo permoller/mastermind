@@ -1,10 +1,10 @@
-namespace Mastermind.ConsoleApp.Tests
+namespace Mastermind.HumanPlayer.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Linq;
-    using Mastermind.ConsoleApp;
+    using Mastermind.HumanPlayer;
     using Mastermind.GameLogic;
     using Xunit;
     using System.IO;
