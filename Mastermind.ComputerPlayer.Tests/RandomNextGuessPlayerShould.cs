@@ -40,9 +40,9 @@
             guessesAndResults.Add(new GuessAndResult(guess1, new Result(0, 0)));
             var guess2 = player.GetGuess(game);
             guessesAndResults.Add(new GuessAndResult(guess2, new Result(0, 0)));
-            var usedPinNumbers = guess1.Pins.Select(p => p.Number).Union(guess2.Pins.Select(p => p.Number));
-            var pinNumberNotUsed = Enumerable.Range(0, 10).Except(usedPinNumbers).First();
-            player.EndGame(game, new GamePlayResult(false, new Line(pinNumberNotUsed, pinNumberNotUsed, pinNumberNotUsed, pinNumberNotUsed)));
+            var usedPegNumbers = guess1.Pegs.Select(p => p.Number).Union(guess2.Pegs.Select(p => p.Number));
+            var pegNumberNotUsed = Enumerable.Range(0, 10).Except(usedPegNumbers).First();
+            player.EndGame(game, new GamePlayResult(false, new Line(pegNumberNotUsed, pegNumberNotUsed, pegNumberNotUsed, pegNumberNotUsed)));
 
             // Assert - The game must complete without errors
         }
@@ -62,17 +62,17 @@
 
         private class GameMock : IGame
         {
-            public GameMock(int numberOfPins, int numberOfPinsPerLine, int maxNumberOfGuesses, IReadOnlyList<GuessAndResult> guessesAndResults)
+            public GameMock(int numberOfPegs, int numberOfPegsPerLine, int maxNumberOfGuesses, IReadOnlyList<GuessAndResult> guessesAndResults)
             {
-                NumberOfPins = numberOfPins;
-                NumberOfPinsPerLine = numberOfPinsPerLine;
+                NumberOfPegs = numberOfPegs;
+                NumberOfPegsPerLine = numberOfPegsPerLine;
                 MaxNumberOfGuesses = maxNumberOfGuesses;
                 GuessesAndResults = guessesAndResults;
             }
 
-            public int NumberOfPins { get; }
+            public int NumberOfPegs { get; }
 
-            public int NumberOfPinsPerLine { get; }
+            public int NumberOfPegsPerLine { get; }
 
             public int MaxNumberOfGuesses { get; }
 

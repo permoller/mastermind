@@ -5,7 +5,7 @@ namespace Mastermind.GameLogic.Tests
     public class LineComparerShould
     {
         [Theory]
-        // test all combinations when two pins are available
+        // test all combinations when two pegs are available
         [InlineData(0, 0, 0, 0, 2, 0)]
         [InlineData(0, 0, 0, 1, 1, 0)]
         [InlineData(0, 0, 1, 0, 1, 0)]
@@ -25,16 +25,16 @@ namespace Mastermind.GameLogic.Tests
         [InlineData(1, 1, 0, 1, 1, 0)]
         [InlineData(1, 1, 1, 0, 1, 0)]
         [InlineData(1, 1, 1, 1, 2, 0)]
-        // additional case to test that we can get one correct colored pin i the wrong position
+        // additional case to test that we can get one correct colored peg i the wrong position
         [InlineData(0, 1, 1, 2, 0, 1)]
-        public void GiveTheExpectedResult(int guessPin1, int guessPin2, int secretPin1, int secretPin2, int expectedCorrect, int expectedWrongPosition)
+        public void GiveTheExpectedResult(int guessPeg1, int guessPeg2, int secretPeg1, int secretPeg2, int expectedCorrect, int expectedWrongPosition)
         {
             var lineComparer = new LineComparer();
-            var guess = new Line(guessPin1, guessPin2);
-            var secret = new Line(secretPin1, secretPin2);
+            var guess = new Line(guessPeg1, guessPeg2);
+            var secret = new Line(secretPeg1, secretPeg2);
             var actualResult = lineComparer.Compare(guess, secret);
-            Assert.Equal(expectedCorrect, actualResult.NumberOfCorrectPins);
-            Assert.Equal(expectedWrongPosition, actualResult.NumberOfCorrectColoredPinsInWrongPosition);
+            Assert.Equal(expectedCorrect, actualResult.NumberOfCorrectPegs);
+            Assert.Equal(expectedWrongPosition, actualResult.NumberOfCorrectColoredPegsInWrongPosition);
         }
     }
 }

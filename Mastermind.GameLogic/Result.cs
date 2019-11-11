@@ -4,14 +4,14 @@ namespace Mastermind.GameLogic
 {
     public class Result
     {
-        public int NumberOfCorrectPins { get; }
+        public int NumberOfCorrectPegs { get; }
 
-        public int NumberOfCorrectColoredPinsInWrongPosition { get; }
+        public int NumberOfCorrectColoredPegsInWrongPosition { get; }
 
         public Result(int correct, int wrongPosition)
         {
-            NumberOfCorrectPins = correct;
-            NumberOfCorrectColoredPinsInWrongPosition = wrongPosition;
+            NumberOfCorrectPegs = correct;
+            NumberOfCorrectColoredPegsInWrongPosition = wrongPosition;
         }
     }
 }

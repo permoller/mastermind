@@ -15,7 +15,7 @@ namespace Mastermind.ConsoleApp
 
         public override void BeginGame(IGame game)
         {
-            _Console.WriteLine($"The valid pins are from 0 to {game.NumberOfPins - 1}");
+            _Console.WriteLine($"The valid pegs are from 0 to {game.NumberOfPegs - 1}");
         }
 
         public override void EndGame(IGame game, GamePlayResult result)
@@ -28,7 +28,7 @@ namespace Mastermind.ConsoleApp
             else
             {
                 _Console.WriteLine($"Game over - The secret was not guessed in {game.MaxNumberOfGuesses} tries");
-                _Console.WriteLine($"The secret was: {string.Join(" ", result.Secret.Pins.Select(p => p.Number))}");
+                _Console.WriteLine($"The secret was: {string.Join(" ", result.Secret.Pegs.Select(p => p.Number))}");
             }
         }
 
@@ -43,21 +43,21 @@ namespace Mastermind.ConsoleApp
             if (game.GuessesAndResults.Count > 0)
             {
                 var result = game.GuessesAndResults.Last().Result;
-                _Console.WriteLine($" | Correct: {result.NumberOfCorrectPins} | Wrong position: {result.NumberOfCorrectColoredPinsInWrongPosition}");
+                _Console.WriteLine($" | Correct: {result.NumberOfCorrectPegs} | Wrong position: {result.NumberOfCorrectColoredPegsInWrongPosition}");
             }
         }
 
         private Line ReadLine(IGame game)
         {
             _Console.Write("Guess:");
-            var pins = new List<Pin>();
-            for (var i = 0; i < game.NumberOfPinsPerLine; i++)
+            var pegs = new List<Peg>();
+            for (var i = 0; i < game.NumberOfPegsPerLine; i++)
             {
-                pins.Add(ReadPin(game));
+                pegs.Add(ReadPeg(game));
             }
-            return new Line(pins.ToArray());
+            return new Line(pegs.ToArray());
         }
-        private Pin ReadPin(IGame game)
+        private Peg ReadPeg(IGame game)
         {
             _Console.Write(" ");
             var top = _Console.CursorTop;
@@ -69,9 +69,9 @@ namespace Mastermind.ConsoleApp
                 var c = keyInfo.KeyChar;
                 if (int.TryParse(c.ToString(), out var number))
                 {
-                    if (number >= 0 && number < game.NumberOfPins)
+                    if (number >= 0 && number < game.NumberOfPegs)
                     {
-                        return new Pin(number);
+                        return new Peg(number);
                     }
                 }
                 _Console.SetCursorPosition(left, top);

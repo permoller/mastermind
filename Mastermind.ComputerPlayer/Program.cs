@@ -17,9 +17,9 @@
         {
             foreach (var guessAndResult in game.GuessesAndResults)
             {
-                Console.WriteLine("Guess: " + string.Join(" ", guessAndResult.Guess.Pins.Select(p => p.Number)) + " | Correct: " + guessAndResult.Result.NumberOfCorrectPins + " | Wrong position: " + guessAndResult.Result.NumberOfCorrectColoredPinsInWrongPosition);
+                Console.WriteLine("Guess: " + string.Join(" ", guessAndResult.Guess.Pegs.Select(p => p.Number)) + " | Correct: " + guessAndResult.Result.NumberOfCorrectPegs + " | Wrong position: " + guessAndResult.Result.NumberOfCorrectColoredPegsInWrongPosition);
             }
-            Console.WriteLine("Secret: " + string.Join(" ", result.Secret.Pins.Select(p => p.Number)));
+            Console.WriteLine("Secret: " + string.Join(" ", result.Secret.Pegs.Select(p => p.Number)));
             Console.WriteLine("Was secret guessed: " + result.WasTheSecretGuessed);
 
         }

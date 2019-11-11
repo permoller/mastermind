@@ -8,11 +8,11 @@ namespace Mastermind.ConsoleApp
     {
         public static void Main()
         {
-            var numberOfPins = GetNumber("Number of different pins", 1, 9, 8);
-            var numberOfPinsPerLine = GetNumber("Number of pins per line", 1, 9, 4);
+            var numberOfPegs = GetNumber("Number of different pegs", 1, 9, 8);
+            var numberOfPegsPerLine = GetNumber("Number of pegs per line", 1, 9, 4);
             var maxNumberOfGuesses = GetNumber("Max number of guesses", 1, 100, 10);
 
-            var game = new Game(numberOfPins, numberOfPinsPerLine, maxNumberOfGuesses);
+            var game = new Game(numberOfPegs, numberOfPegsPerLine, maxNumberOfGuesses);
             var player = new ConsolePlayer(new ConsoleWrapper());
             var victory = game.Play(player);
         }

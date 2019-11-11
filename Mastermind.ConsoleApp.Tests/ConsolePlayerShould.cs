@@ -61,11 +61,11 @@ namespace Mastermind.ConsoleApp.Tests
         }
 
         [Fact]
-        public void IgnoreKeysThatDoesNotMapToPins()
+        public void IgnoreKeysThatDoesNotMapToPegs()
         {
             // Arrange
             const string Input = "\t192d3\r4 5";
-            var expectedPinNumbers = new int[] { 1, 2, 3, 4, 5 };
+            var expectedPegNumbers = new int[] { 1, 2, 3, 4, 5 };
             var console = new ConsoleMock(Input);
             var consolePlayer = new ConsolePlayer(console);
             var game = new Game(8, 5, 10, new Line(3, 2, 3, 0, 4));
@@ -74,7 +74,7 @@ namespace Mastermind.ConsoleApp.Tests
             var guess = consolePlayer.GetGuess(game);
 
             // Assert
-            Assert.Equal(expectedPinNumbers, guess.Pins.Select(p => p.Number));
+            Assert.Equal(expectedPegNumbers, guess.Pegs.Select(p => p.Number));
         }
 
         private class ConsoleMock : IConsole

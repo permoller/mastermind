@@ -4,8 +4,8 @@ namespace Mastermind.GameLogic
 
     public interface IGame
     {
-        int NumberOfPins { get; }
-        int NumberOfPinsPerLine { get; }
+        int NumberOfPegs { get; }
+        int NumberOfPegsPerLine { get; }
         int MaxNumberOfGuesses { get; }
         IReadOnlyList<GuessAndResult> GuessesAndResults { get; }
     }

@@ -13,7 +13,7 @@ namespace Mastermind.ComputerPlayer
 
         public override void BeginGame(IGame game)
         {
-            _LinesThatCouldBeTheSecret = LineGenerator.GenerateAllDifferentLines(game.NumberOfPins, game.NumberOfPinsPerLine);
+            _LinesThatCouldBeTheSecret = LineGenerator.GenerateAllDifferentLines(game.NumberOfPegs, game.NumberOfPegsPerLine);
         }
 
         public override Line GetGuess(IGame game)

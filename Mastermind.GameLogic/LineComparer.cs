@@ -6,49 +6,49 @@ namespace Mastermind.GameLogic
     {
         public Result Compare(Line guess, Line secret)
         {
-            if (guess.Pins.Count != secret.Pins.Count)
-                throw new ArgumentException($"Pin count of {nameof(guess)} ({guess.Pins.Count}) is different from {nameof(secret)} ({secret.Pins.Count})");
+            if (guess.Pegs.Count != secret.Pegs.Count)
+                throw new ArgumentException($"Peg count of {nameof(guess)} ({guess.Pegs.Count}) is different from {nameof(secret)} ({secret.Pegs.Count})");
 
-            var numberOfPinsPerLine = guess.Pins.Count;
+            var numberOfPegsPerLine = guess.Pegs.Count;
 
-            if (numberOfPinsPerLine <= 0)
-                throw new ArgumentException("There must be at least one pin in the lines.");
+            if (numberOfPegsPerLine <= 0)
+                throw new ArgumentException("There must be at least one peg in the lines.");
 
             int correct = 0;
             int wrongPosition = 0;
 
-            var secretPins = secret.Pins;
-            var guessPins = guess.Pins;
+            var secretPegs = secret.Pegs;
+            var guessPegs = guess.Pegs;
 
-            var secretPinsUsed = new bool[numberOfPinsPerLine];
-            var guessPinsUsed = new bool[numberOfPinsPerLine];
+            var secretPegsUsed = new bool[numberOfPegsPerLine];
+            var guessPegsUsed = new bool[numberOfPegsPerLine];
 
-            // find pins with the correct color at the correct position
-            for (var i = 0; i < numberOfPinsPerLine; i++)
+            // find pegs with the correct color at the correct position
+            for (var i = 0; i < numberOfPegsPerLine; i++)
             {
-                if (secretPins[i].Number == guessPins[i].Number)
+                if (secretPegs[i].Number == guessPegs[i].Number)
                 {
-                    secretPinsUsed[i] = true;
-                    guessPinsUsed[i] = true;
+                    secretPegsUsed[i] = true;
+                    guessPegsUsed[i] = true;
                     correct++;
                 }
             }
 
-            // find pins with correct color at the wrong position
-            for (var guessIndex = 0; guessIndex < numberOfPinsPerLine; guessIndex++)
+            // find pegs with correct color at the wrong position
+            for (var guessIndex = 0; guessIndex < numberOfPegsPerLine; guessIndex++)
             {
-                if (guessPinsUsed[guessIndex])
+                if (guessPegsUsed[guessIndex])
                     continue;
-                var guessPin = guessPins[guessIndex];
-                for (var secretIndex = 0; secretIndex < numberOfPinsPerLine; secretIndex++)
+                var guessPeg = guessPegs[guessIndex];
+                for (var secretIndex = 0; secretIndex < numberOfPegsPerLine; secretIndex++)
                 {
-                    if (secretPinsUsed[secretIndex])
+                    if (secretPegsUsed[secretIndex])
                         continue;
-                    var secretPin = secretPins[secretIndex];
-                    if (guessPin.Number == secretPin.Number)
+                    var secretPeg = secretPegs[secretIndex];
+                    if (guessPeg.Number == secretPeg.Number)
                     {
-                        secretPinsUsed[secretIndex] = true;
-                        guessPinsUsed[guessIndex] = true;
+                        secretPegsUsed[secretIndex] = true;
+                        guessPegsUsed[guessIndex] = true;
                         wrongPosition++;
                         break;
                     }

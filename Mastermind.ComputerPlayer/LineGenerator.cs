@@ -7,22 +7,22 @@ namespace Mastermind.ComputerPlayer
 
     public static class LineGenerator
     {
-        public static IList<Line> GenerateAllDifferentLines(int numberOfPins, int numberOfPinsPerLine)
+        public static IList<Line> GenerateAllDifferentLines(int numberOfPegs, int numberOfPegsPerLine)
         {
-            return Enumerable.Range(0, (int)Math.Pow(numberOfPins, numberOfPinsPerLine))
-                    .Select(index => new Line(GetPinsFromLineIndex(index, numberOfPinsPerLine, numberOfPins)))
+            return Enumerable.Range(0, (int)Math.Pow(numberOfPegs, numberOfPegsPerLine))
+                    .Select(index => new Line(GetPegsFromLineIndex(index, numberOfPegsPerLine, numberOfPegs)))
                     .ToList();
         }
 
-        private static Pin[] GetPinsFromLineIndex(int index, int numberOfPinsPerLine, int numberOfPins)
+        private static Peg[] GetPegsFromLineIndex(int index, int numberOfPegsPerLine, int numberOfPegs)
         {
-            var pinsForLine = new Pin[numberOfPinsPerLine];
-            for (var pinIndex = 0; pinIndex < numberOfPinsPerLine; pinIndex++)
+            var pegsForLine = new Peg[numberOfPegsPerLine];
+            for (var pegIndex = 0; pegIndex < numberOfPegsPerLine; pegIndex++)
             {
-                pinsForLine[pinIndex] = index % numberOfPins;
-                index = index / numberOfPins;
+                pegsForLine[pegIndex] = index % numberOfPegs;
+                index = index / numberOfPegs;
             }
-            return pinsForLine;
+            return pegsForLine;
         }
     }
 }

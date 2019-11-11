@@ -1,16 +1,16 @@
 namespace Mastermind.GameLogic
 {
-    public class Pin
+    public class Peg
     {
         public int Number { get; }
-        public Pin(int number)
+        public Peg(int number)
         {
             Number = number;
         }
 
-        public static implicit operator Pin(int number)
+        public static implicit operator Peg(int number)
         {
-            return new Pin(number);
+            return new Peg(number);
         }
     }
 }

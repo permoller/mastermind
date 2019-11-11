@@ -18,20 +18,20 @@ namespace Mastermind.ComputerPlayer.Tests
         [InlineData(3, 2, 9)]
         [InlineData(3, 3, 27)]
         [InlineData(8, 4, 4096)]
-        public void GenerateAllLines(int numberOfPins, int numberOfPinsPerLine, int expectedNumberOfLines)
+        public void GenerateAllLines(int numberOfPegs, int numberOfPegsPerLine, int expectedNumberOfLines)
         {
-            var lines = LineGenerator.GenerateAllDifferentLines(numberOfPins, numberOfPinsPerLine);
+            var lines = LineGenerator.GenerateAllDifferentLines(numberOfPegs, numberOfPegsPerLine);
             Assert.Equal(expectedNumberOfLines, lines.Count);
-            Assert.Equal(expectedNumberOfLines, lines.Distinct(new LinePinEqualityComparer()).Count());
+            Assert.Equal(expectedNumberOfLines, lines.Distinct(new LinePegEqualityComparer()).Count());
         }
 
-        private class LinePinEqualityComparer : IEqualityComparer<Line>
+        private class LinePegEqualityComparer : IEqualityComparer<Line>
         {
             public bool Equals([AllowNull] Line x, [AllowNull] Line y)
             {
                 return (x is null || y is null)
                 ? x is null && y is null
-                : Enumerable.SequenceEqual(x.Pins.Select(p => p.Number), y.Pins.Select(p => p.Number));
+                : Enumerable.SequenceEqual(x.Pegs.Select(p => p.Number), y.Pegs.Select(p => p.Number));
             }
 
             public int GetHashCode([DisallowNull] Line obj)
@@ -43,9 +43,9 @@ namespace Mastermind.ComputerPlayer.Tests
                 unchecked
                 {
                     var hashCode = 1320594601;
-                    foreach (var pin in obj.Pins)
+                    foreach (var peg in obj.Pegs)
                     {
-                        hashCode = hashCode * -1521134295 + pin.Number.GetHashCode();
+                        hashCode = hashCode * -1521134295 + peg.Number.GetHashCode();
                     }
                     return hashCode;
                 }

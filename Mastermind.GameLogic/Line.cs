@@ -4,11 +4,11 @@ namespace Mastermind.GameLogic
 
     public class Line
     {
-        public IReadOnlyList<Pin> Pins { get; }
+        public IReadOnlyList<Peg> Pegs { get; }
 
-        public Line(params Pin[] pins)
+        public Line(params Peg[] pegs)
         {
-            Pins = pins;
+            Pegs = pegs;
         }
     }
 }
