@@ -9,9 +9,11 @@ namespace Mastermind.ComputerPlayer
     {
         public bool Equals([AllowNull] Result x, [AllowNull] Result y)
         {
-            return ReferenceEquals(x, y) || ((x is null || y is null)
-            ? x is null && y is null
-            : x.NumberOfCorrectPegs == y.NumberOfCorrectPegs && x.NumberOfCorrectColoredPegsInWrongPosition == y.NumberOfCorrectColoredPegsInWrongPosition);
+            if (ReferenceEquals(x, y))
+                return true;
+            if (x is null || y is null)
+                return false;
+            return x.NumberOfCorrectPegs == y.NumberOfCorrectPegs && x.NumberOfCorrectColoredPegsInWrongPosition == y.NumberOfCorrectColoredPegsInWrongPosition;
         }
 
         public int GetHashCode([DisallowNull] Result obj)

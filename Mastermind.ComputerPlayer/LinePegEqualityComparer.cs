@@ -10,9 +10,11 @@ namespace Mastermind.ComputerPlayer
     {
         public bool Equals([AllowNull] Line x, [AllowNull] Line y)
         {
-            return ReferenceEquals(x, y) || ((x is null || y is null)
-            ? x is null && y is null
-            : Enumerable.SequenceEqual(x.Pegs.Select(p => p.Number), y.Pegs.Select(p => p.Number)));
+            if (ReferenceEquals(x, y))
+                return true;
+            if (x is null || y is null)
+                return false;
+            return Enumerable.SequenceEqual(x.Pegs.Select(p => p.Number), y.Pegs.Select(p => p.Number));
         }
 
         public int GetHashCode([DisallowNull] Line obj)
