@@ -15,7 +15,8 @@
             var players = GetPlayers(mastermindDirectory);
 
             var random = new Random();
-            var gamesToTestFunctionalityOfPlayer = new Game[]{
+            var gamesToTestFunctionalityOfPlayer = new Game[]
+            {
                 // small size game (4 different lines) with many of tries - normally player will win
                 new Game(2, 2, 20),
                 // medium size game (1296 different lines) with few tries - normally player will lose

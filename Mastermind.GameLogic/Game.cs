@@ -16,10 +16,6 @@ namespace Mastermind.GameLogic
 
         private readonly LineComparer _LineComparer;
 
-        private readonly List<GuessAndResult> _GuessesAndResults = new List<GuessAndResult>();
-
-        public IReadOnlyList<GuessAndResult> GuessesAndResults => _GuessesAndResults;
-
         private static int[] RandomLine(int numberOfDifferentPegs, int numberOfPegsPerLine)
         {
             var random = new Random();
@@ -56,7 +52,7 @@ namespace Mastermind.GameLogic
 
         public GamePlayResult Play(IPlayer player)
         {
-            _GuessesAndResults.Clear();
+            List<GuessAndResult> guessesAndResults = new List<GuessAndResult>();
             player.BeginGame(_NumberOfDifferentPegs, _NumberOfPegsPerLine, _MaxNumberOfGuesses);
             Result result;
 
@@ -65,12 +61,12 @@ namespace Mastermind.GameLogic
                 var guess = player.GetGuess();
                 ValidateLine(guess);
                 result = _LineComparer.Compare(guess, _SecretLine);
-                _GuessesAndResults.Add(new GuessAndResult(guess, result));
+                guessesAndResults.Add(new GuessAndResult(guess, result));
                 player.ResultFromPreviousGuess(result.NumberOfPegsWithCorrectColorAndCorrectPosition, result.NumberOfPegsWithCorrectColorAndWrongPosition);
-            } while (result.NumberOfPegsWithCorrectColorAndCorrectPosition != _NumberOfPegsPerLine && _GuessesAndResults.Count < _MaxNumberOfGuesses);
+            } while (result.NumberOfPegsWithCorrectColorAndCorrectPosition != _NumberOfPegsPerLine && guessesAndResults.Count < _MaxNumberOfGuesses);
             var wasTheSecretGuessed = result.NumberOfPegsWithCorrectColorAndCorrectPosition == _NumberOfPegsPerLine;
-            var gameResult = new GamePlayResult(wasTheSecretGuessed, _SecretLine);
-            player.EndGame(wasTheSecretGuessed, _GuessesAndResults.Count, _SecretLine);
+            var gameResult = new GamePlayResult(wasTheSecretGuessed, _SecretLine, guessesAndResults);
+            player.EndGame(wasTheSecretGuessed, guessesAndResults.Count, _SecretLine);
             return gameResult;
         }
     }

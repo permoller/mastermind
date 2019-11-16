@@ -40,27 +40,10 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
             _UsedGuesses = new List<int[]>();
 
             // 1. Create the set S of 1296 possible codes(1111, 1112... 6665, 6666)
-            _AllLines = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new int[0]).ToList();
+            _AllLines = LineGenerator.GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine);
             _PosibleSolutions = _AllLines.ToList();
         }
-        private static IEnumerable<int[]> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<int> pegs)
-        {
-            if (remainingNumberOfPegsInLine == 0)
-            {
-                yield return pegs.ToArray();
-            }
-            else
-            {
-                for (int peg = 0; peg < numberOfPegs; peg++)
-                {
-                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(peg));
-                    foreach (var line in lines)
-                    {
-                        yield return line;
-                    }
-                }
-            }
-        }
+
 
         public int[] GetGuess()
         {
