@@ -3,11 +3,9 @@ namespace Mastermind.HumanPlayer.Tests
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using System.Linq;
     using Mastermind.HumanPlayer;
     using Mastermind.GameLogic;
     using Xunit;
-    using System.IO;
 
     public class ConsolePlayerShould
     {
