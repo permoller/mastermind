@@ -45,6 +45,9 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
         public int[] GetGuess()
         {
             // return a random line from the remaining lines that could be the secret
+            if (_PosibleSolutions.Count == 0)
+                throw new InvalidOperationException("No possible solution");
+
             return _Guess = _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)];
         }
 

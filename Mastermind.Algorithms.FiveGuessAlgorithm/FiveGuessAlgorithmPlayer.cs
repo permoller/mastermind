@@ -61,7 +61,9 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
                 // For each possible guess, that is, any unused code of the 1296 not just those in S,
                 var possibleGuesses = _AllLines.Except(_UsedGuesses);
                 if (!possibleGuesses.Any())
-                    throw new Exception("No posible solutions");
+                    throw new InvalidOperationException("All guesses used");
+                if (!_PosibleSolutions.Any())
+                    throw new InvalidOperationException("No posible solution");
                 foreach (var possibleGuess in possibleGuesses)
                 {
                     // calculate how many possibilities in S would be eliminated for each possible colored/white peg score.
