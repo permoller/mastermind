@@ -74,7 +74,7 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
                     foreach (var posibleSolution in _PosibleSolutions)
                     {
                         var result = _LineComparer.Compare(possibleGuess, posibleSolution);
-                        hitCounts[result.NumberOfPegsWithCorrectColorAndCorrectPosition, result.NumberOfPegsWithCorrectColorAndWrongPosition]++;
+                        hitCounts[result.NumberOfCorrectPegs, result.NumberOfPegsAtWrongPosition]++;
                     }
                     // the colored/white peg score with the highest hit count will eliminate the fewest possibilities;
                     var highestHitCount = 0;
@@ -115,10 +115,10 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
             return Enumerable.SequenceEqual(x, y);
         }
 
-        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        public void ResultFromPreviousGuess(int numberOfCorrectsPegs, int numberOfPegsAtWrongPosition)
         {
             // 4. If the response is four colored pegs, the game is won, the algorithm terminates.
-            if (correctColorAndCorrectPosition == _NumberOfPegsPerLine)
+            if (numberOfCorrectsPegs == _NumberOfPegsPerLine)
             {
                 return;
             }
@@ -127,8 +127,8 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
             {
                 var previousGuess = _UsedGuesses.Last();
                 var r = _LineComparer.Compare(previousGuess, l);
-                return r.NumberOfPegsWithCorrectColorAndCorrectPosition == correctColorAndCorrectPosition
-                && r.NumberOfPegsWithCorrectColorAndWrongPosition == corectColorWrongAndWrongPosition;
+                return r.NumberOfCorrectPegs == numberOfCorrectsPegs
+                && r.NumberOfPegsAtWrongPosition == numberOfPegsAtWrongPosition;
             }).ToList();
         }
 

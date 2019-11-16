@@ -22,9 +22,9 @@ namespace Mastermind.HumanPlayer
             return _Player.GetGuess();
         }
 
-        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        public void ResultFromPreviousGuess(int numberOfCorrectsPegs, int numberOfPegsAtWrongPosition)
         {
-            _Player.ResultFromPreviousGuess(correctColorAndCorrectPosition, corectColorWrongAndWrongPosition);
+            _Player.ResultFromPreviousGuess(numberOfCorrectsPegs, numberOfPegsAtWrongPosition);
         }
     }
 }

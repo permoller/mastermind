@@ -4,6 +4,11 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
     using System.Collections.Generic;
     using System.Linq;
     using Mastermind.GameLogic;
+
+    /// <summery>
+    /// Every guess is made by chosing a random line from at list of all posible solutions.
+    /// For every guess the lines that will not give the same result as the guess are removed from a list of posible solutions.
+    /// </summery>
     public class RandomGuessAmongPosibleSolutionsPlayer : IPlayer
     {
         private int _NumberOfDifferentPegs;
@@ -51,14 +56,14 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
             return _Guess = _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)];
         }
 
-        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        public void ResultFromPreviousGuess(int numberOfCorrectsPegs, int numberOfPegsAtWrongPosition)
         {
             // filter out all lines that does not give the same result as the previous guess
             _PosibleSolutions = _PosibleSolutions.Where(l =>
             {
                 var r = _LineComparer.Compare(_Guess, l);
-                return r.NumberOfPegsWithCorrectColorAndCorrectPosition == correctColorAndCorrectPosition
-                && r.NumberOfPegsWithCorrectColorAndWrongPosition == corectColorWrongAndWrongPosition;
+                return r.NumberOfCorrectPegs == numberOfCorrectsPegs
+                && r.NumberOfPegsAtWrongPosition == numberOfPegsAtWrongPosition;
             }).ToList();
         }
 

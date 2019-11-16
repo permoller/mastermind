@@ -33,8 +33,8 @@ namespace Mastermind.GameLogic.Tests
             var guess = new int[] { guessPeg1, guessPeg2 };
             var secret = new int[] { secretPeg1, secretPeg2 };
             var actualResult = lineComparer.Compare(guess, secret);
-            Assert.Equal(expectedCorrect, actualResult.NumberOfPegsWithCorrectColorAndCorrectPosition);
-            Assert.Equal(expectedWrongPosition, actualResult.NumberOfPegsWithCorrectColorAndWrongPosition);
+            Assert.Equal(expectedCorrect, actualResult.NumberOfCorrectPegs);
+            Assert.Equal(expectedWrongPosition, actualResult.NumberOfPegsAtWrongPosition);
         }
     }
 }

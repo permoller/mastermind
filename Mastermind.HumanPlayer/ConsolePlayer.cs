@@ -38,9 +38,9 @@ namespace Mastermind.HumanPlayer
         }
 
 
-        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        public void ResultFromPreviousGuess(int numberOfCorrectsPegs, int numberOfPegsAtWrongPosition)
         {
-            _Console.WriteLine($" | Correct: {correctColorAndCorrectPosition} | Wrong position: {corectColorWrongAndWrongPosition}");
+            _Console.WriteLine($" | Correct: {numberOfCorrectsPegs} | Wrong position: {numberOfPegsAtWrongPosition}");
         }
 
         public void EndGame(bool wasTheSecretGuessed, int numberOfGuesses, int[] secret)

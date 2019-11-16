@@ -116,9 +116,9 @@
                 Console.WriteLine("Guess: " +
                     string.Join(" ", guessAndResult.Guess) +
                     " | Correct: " +
-                    guessAndResult.Result.NumberOfPegsWithCorrectColorAndCorrectPosition +
+                    guessAndResult.Result.NumberOfCorrectPegs +
                     " | Wrong position: " +
-                    guessAndResult.Result.NumberOfPegsWithCorrectColorAndWrongPosition);
+                    guessAndResult.Result.NumberOfPegsAtWrongPosition);
             }
             Console.WriteLine("Secret: " + string.Join(" ", result.Secret));
             Console.WriteLine("Was secret guessed: " + result.WasTheSecretGuessed);

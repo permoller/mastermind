@@ -62,9 +62,9 @@ namespace Mastermind.GameLogic
                 ValidateLine(guess);
                 result = _LineComparer.Compare(guess, _SecretLine);
                 guessesAndResults.Add(new GuessAndResult(guess, result));
-                player.ResultFromPreviousGuess(result.NumberOfPegsWithCorrectColorAndCorrectPosition, result.NumberOfPegsWithCorrectColorAndWrongPosition);
-            } while (result.NumberOfPegsWithCorrectColorAndCorrectPosition != _NumberOfPegsPerLine && guessesAndResults.Count < _MaxNumberOfGuesses);
-            var wasTheSecretGuessed = result.NumberOfPegsWithCorrectColorAndCorrectPosition == _NumberOfPegsPerLine;
+                player.ResultFromPreviousGuess(result.NumberOfCorrectPegs, result.NumberOfPegsAtWrongPosition);
+            } while (result.NumberOfCorrectPegs != _NumberOfPegsPerLine && guessesAndResults.Count < _MaxNumberOfGuesses);
+            var wasTheSecretGuessed = result.NumberOfCorrectPegs == _NumberOfPegsPerLine;
             var gameResult = new GamePlayResult(wasTheSecretGuessed, _SecretLine, guessesAndResults);
             player.EndGame(wasTheSecretGuessed, guessesAndResults.Count, _SecretLine);
             return gameResult;

@@ -19,9 +19,11 @@ namespace Mastermind.GameLogic
         int[] GetGuess();
 
         /// <summery>Called after each call to <see cref="GetGuess"/> to provide the result of the guess.</summery>
-        /// <param name="correctColorAndCorrectPosition">The number of pins in the guess that was of the correct color and at the correct position in the line.</param>
-        /// <param name="corectColorWrongAndWrongPosition">The number of pins in the guess that was of the correct color but not at the correct position in the line.</param>
-        void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition);
+        /// <param name="numberOfCorrectsPegs">The number of pegs in the guess that have the same peg at the same position in the secret line.</param>
+        /// <param name="numberOfPegsAtWrongPosition">The number of pegs in the guess that have the same peg at a different position in the secret line.
+        /// A peg can only count once in the result.
+        /// If the same peg is used twice in the guess and is only used once in the secret only one of the pegs in the guess will be considered to have a match in the secret.</param>
+        void ResultFromPreviousGuess(int numberOfCorrectsPegs, int numberOfPegsAtWrongPosition);
 
         /// <summery>Called at the end of each game. That is when the maximum number of guesses are used or the secret is guessed.</summery>
         /// <param name="wasTheSecretGuessed">Tells if the secret was guessed within the allowed number of guesses.</param>
