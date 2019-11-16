@@ -1,4 +1,4 @@
-namespace Mastermind.ComputerPlayer
+namespace Mastermind.Algorithms.FiveGuessAlgorithm
 {
     using System;
     using System.Collections.Generic;
@@ -27,14 +27,30 @@ namespace Mastermind.ComputerPlayer
         private IList<Line> _PosibleSolutions;
         private IReadOnlyList<Line> _AllLines;
         private LineComparer _LineComparer = new LineComparer();
-        private IEqualityComparer<Line> _LineEqualityComparer = new LinePegEqualityComparer();
-        private ResultEqualityComparer _ResultEqualityComparer = new ResultEqualityComparer();
 
         public override void BeginGame(IGame game)
         {
             // 1. Create the set S of 1296 possible codes(1111, 1112... 6665, 6666)
-            _AllLines = LineGenerator.GenerateAllDifferentLines(game.NumberOfPegs, game.NumberOfPegsPerLine).ToList();
+            _AllLines = GenerateAllLines(game.NumberOfPegs, game.NumberOfPegsPerLine, new Peg[0]).ToList();
             _PosibleSolutions = _AllLines.ToList();
+        }
+        private static IEnumerable<Line> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<Peg> pegs)
+        {
+            if (remainingNumberOfPegsInLine == 0)
+            {
+                yield return new Line(pegs.ToArray());
+            }
+            else
+            {
+                for (int number = 0; number < numberOfPegs; number++)
+                {
+                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(new Peg(number)));
+                    foreach (var line in lines)
+                    {
+                        yield return line;
+                    }
+                }
+            }
         }
 
         public override Line GetGuess(IGame game)
@@ -50,18 +66,26 @@ namespace Mastermind.ComputerPlayer
                 // 5. Otherwise, remove from S any code that would not give the same response if it(the guess) were the code.
                 var previousResult = game.GuessesAndResults.Last().Result;
                 var previousGuess = game.GuessesAndResults.Last().Guess;
-                _PosibleSolutions = _PosibleSolutions.Where(l => _ResultEqualityComparer.Equals(previousResult, _LineComparer.Compare(previousGuess, l))).ToList();
+                _PosibleSolutions = _PosibleSolutions.Where(l =>
+                {
+                    var r = _LineComparer.Compare(previousGuess, l);
+                    return r.NumberOfCorrectPegs == previousResult.NumberOfCorrectPegs
+                    && r.NumberOfCorrectColoredPegsInWrongPosition == previousResult.NumberOfCorrectColoredPegsInWrongPosition;
+                }).ToList();
 
                 // 6. Apply minimax technique to find a next guess as follows: 
                 var guessesWithMaximumScore = new List<Line>();
                 var maximumScore = 0;
                 // For each possible guess, that is, any unused code of the 1296 not just those in S,
-                foreach (var possibleGuess in _AllLines.Except(game.GuessesAndResults.Select(x => x.Guess), _LineEqualityComparer))
+                var possibleGuesses = _AllLines.Where(l => game.GuessesAndResults.All(x => !IsEqual(l, x.Guess)));
+                if (!possibleGuesses.Any())
+                    throw new Exception("No posible solutions");
+                foreach (var possibleGuess in possibleGuesses)
                 {
                     // calculate how many possibilities in S would be eliminated for each possible colored/white peg score.
                     // The score of a guess is the minimum number of possibilities it might eliminate from S.
                     // A single pass through S for each unused code of the 1296 will provide a hit count for each colored/white peg score found;
-                    var hitCounts = new int[game.NumberOfPegs, game.NumberOfPegs];
+                    var hitCounts = new int[game.NumberOfPegsPerLine + 1, game.NumberOfPegsPerLine + 1];
                     hitCounts.Initialize();
                     foreach (var posibleSolution in _PosibleSolutions)
                     {
@@ -70,9 +94,9 @@ namespace Mastermind.ComputerPlayer
                     }
                     // the colored/white peg score with the highest hit count will eliminate the fewest possibilities;
                     var highestHitCount = 0;
-                    for (int i = 0; i < game.NumberOfPegs; i++)
+                    for (int i = 0; i <= game.NumberOfPegsPerLine; i++)
                     {
-                        for (int j = 0; j < game.NumberOfPegs; j++)
+                        for (int j = 0; j <= game.NumberOfPegsPerLine; j++)
                         {
                             highestHitCount = Math.Max(highestHitCount, hitCounts[i, j]);
                         }
@@ -92,13 +116,18 @@ namespace Mastermind.ComputerPlayer
                     }
                 }
                 // From the set of guesses with the maximum score, select one as the next guess, choosing a member of S whenever possible.
-                guess = guessesWithMaximumScore.FirstOrDefault(g => _PosibleSolutions.Contains(g, _LineEqualityComparer)) ?? guessesWithMaximumScore.First();
+                guess = guessesWithMaximumScore.FirstOrDefault(l => _PosibleSolutions.Any(l2 => IsEqual(l, l2))) ?? guessesWithMaximumScore.First();
 
                 // 7. Repeat from step 3.
             }
 
             // 3. Play the guess to get a response of colored and white pegs.
             return guess;
+        }
+
+        private bool IsEqual(Line x, Line y)
+        {
+            return Enumerable.SequenceEqual(x.Pegs.Select(p => p.Number), y.Pegs.Select(p => p.Number));
         }
 
         public override void EndGame(IGame game, GamePlayResult result)
