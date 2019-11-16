@@ -33,7 +33,7 @@
                 foreach (var game in gamesToTestFunctionalityOfPlayer)
                 {
                     var result = game.Play(player);
-                    PrintGame(game, result);
+                    PrintGameResult(result);
                 }
             }
         }
@@ -107,11 +107,11 @@
             _Stopwatch.Restart();
         }
 
-        private static void PrintGame(Game game, GamePlayResult result)
+        private static void PrintGameResult(GamePlayResult result)
         {
             _Stopwatch.Stop();
             Console.WriteLine();
-            foreach (var guessAndResult in game.GuessesAndResults)
+            foreach (var guessAndResult in result.GuessesAndResults)
             {
                 Console.WriteLine("Guess: " +
                     string.Join(" ", guessAndResult.Guess) +

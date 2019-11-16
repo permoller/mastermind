@@ -6,7 +6,7 @@ namespace Mastermind.GameLogic
     {
         public bool WasTheSecretGuessed { get; }
         public int[] Secret { get; }
-        IReadOnlyCollection<GuessAndResult> GuessesAndResults { get; }
+        public IReadOnlyCollection<GuessAndResult> GuessesAndResults { get; }
 
         public GamePlayResult(bool wasTheSecretGuessed, int[] secret, IReadOnlyCollection<GuessAndResult> guessesAndResults)
         {
