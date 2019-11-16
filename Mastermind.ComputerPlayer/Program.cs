@@ -31,7 +31,7 @@
                 PrintPlayer(player);
                 foreach (var game in gamesToTestFunctionalityOfPlayer)
                 {
-                    var result = game.Play(new PlayerMonitor(player, () => Console.Write(".")));
+                    var result = game.Play(player);
                     PrintGame(game, result);
                 }
             }
