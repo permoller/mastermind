@@ -16,6 +16,7 @@ namespace Mastermind.HumanPlayer
         public override void BeginGame(IGame game)
         {
             _Console.WriteLine($"The valid pegs are from 0 to {game.NumberOfPegs - 1}");
+            _Console.WriteLine($"There are {game.NumberOfPegsPerLine} pegs per line");
         }
 
         public override void EndGame(IGame game, GamePlayResult result)
