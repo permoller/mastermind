@@ -4,17 +4,23 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
     using System.Collections.Generic;
     using System.Linq;
     using Mastermind.GameLogic;
-    public class RandomGuessAmongPosibleSolutionsPlayer : Player
+    public class RandomGuessAmongPosibleSolutionsPlayer : IPlayer
     {
+        private int _NumberOfDifferentPegs;
+        private int _NumberOfPegsPerLine;
+        private int _MaxNumberOfGuesses;
+        private Line _Guess;
         private IList<Line> _PosibleSolutions;
         private Random _Random = new Random();
         private LineComparer _LineComparer = new LineComparer();
 
-        public override void BeginGame(IGame game)
+        public void BeginGame(int numberOfDifferentPegs, int numberOfPegsPerLine, int maxNumberOfGuesses)
         {
-            var allLines = new List<Line>();
-
-            _PosibleSolutions = GenerateAllLines(game.NumberOfPegs, game.NumberOfPegsPerLine, new Peg[0]).ToList();
+            _NumberOfDifferentPegs = numberOfDifferentPegs;
+            _NumberOfPegsPerLine = numberOfPegsPerLine;
+            _MaxNumberOfGuesses = maxNumberOfGuesses;
+            _Guess = null;
+            _PosibleSolutions = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new Peg[0]).ToList();
         }
 
         private static IEnumerable<Line> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<Peg> pegs)
@@ -36,22 +42,26 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
             }
         }
 
-        public override Line GetGuess(IGame game)
+        public int[] GetGuess()
         {
-            if (game.GuessesAndResults.Any())
-            {
-                // filter out all lines that does not give the same result as the previous guess
-                var previousResult = game.GuessesAndResults.Last().Result;
-                var previousGuess = game.GuessesAndResults.Last().Guess;
-                _PosibleSolutions = _PosibleSolutions.Where(l =>
-                {
-                    var r = _LineComparer.Compare(previousGuess, l);
-                    return r.NumberOfCorrectPegs == previousResult.NumberOfCorrectPegs
-                    && r.NumberOfCorrectColoredPegsInWrongPosition == previousResult.NumberOfCorrectColoredPegsInWrongPosition;
-                }).ToList();
-            }
             // return a random line from the remaining lines that could be the secret
-            return _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)];
+            return (_Guess = _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)]).Pegs.Select(p => p.Number).ToArray();
+        }
+
+        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        {
+            // filter out all lines that does not give the same result as the previous guess
+            _PosibleSolutions = _PosibleSolutions.Where(l =>
+            {
+                var r = _LineComparer.Compare(_Guess, l);
+                return r.NumberOfPegsWithCorrectColorAndCorrectPosition == correctColorAndCorrectPosition
+                && r.NumberOfPegsWithCorrectColorAndWrongPosition == corectColorWrongAndWrongPosition;
+            }).ToList();
+        }
+
+        public void EndGame(bool wasTheSecretGuessed, int numberOfGuesses, int[] secret)
+        {
+
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Mastermind.HumanPlayer.Tests
         public void WinGame()
         {
             // Arrange
-            var secretLine = new Line(1, 1, 2, 2);
+            var secret = new int[] { 1, 1, 2, 2 };
             const string Input = "1234" + "5670" + "1122";
             const string ResultText1 = "Correct: 1 | Wrong position: 1";
             const string ResultText2 = "Correct: 0 | Wrong position: 0";
@@ -26,7 +26,7 @@ namespace Mastermind.HumanPlayer.Tests
 
             var console = new ConsoleMock(Input);
             var consolePlayer = new ConsolePlayer(console);
-            var game = new Game(8, 4, 10, secretLine);
+            var game = new Game(8, 4, 10, secret);
 
             // Act
             var result = game.Play(consolePlayer);
@@ -44,11 +44,11 @@ namespace Mastermind.HumanPlayer.Tests
         public void LooseGame()
         {
             // Arrange
-            var secretLine = new Line(3, 2, 3, 0);
+            var secret = new int[] { 3, 2, 3, 0 };
             const string secretText = "3 2 3 0";
-            var console = new ConsoleMock("1234765423455241263452735132635241726352");
+            var console = new ConsoleMock("1234" + "7654" + "2345" + "5241" + "2634" + "5273" + "5132" + "6352" + "4172" + "6352");
             var consolePlayer = new ConsolePlayer(console);
-            var game = new Game(8, 4, 10, secretLine);
+            var game = new Game(8, 4, 10, secret);
 
             // Act
             var result = game.Play(consolePlayer);
@@ -68,13 +68,15 @@ namespace Mastermind.HumanPlayer.Tests
             var expectedPegNumbers = new int[] { 1, 2, 3, 4, 5 };
             var console = new ConsoleMock(Input);
             var consolePlayer = new ConsolePlayer(console);
-            var game = new Game(8, 5, 10, new Line(3, 2, 3, 0, 4));
 
             // Act
-            var guess = consolePlayer.GetGuess(game);
+            consolePlayer.BeginGame(8, 5, 10);
+            var guess = consolePlayer.GetGuess();
+            consolePlayer.ResultFromPreviousGuess(5, 0);
+            consolePlayer.EndGame(true, 1, guess);
 
             // Assert
-            Assert.Equal(expectedPegNumbers, guess.Pegs.Select(p => p.Number));
+            Assert.Equal(expectedPegNumbers, guess);
         }
 
         private class ConsoleMock : IConsole

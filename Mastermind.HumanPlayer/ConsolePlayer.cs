@@ -1,64 +1,62 @@
 namespace Mastermind.HumanPlayer
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Mastermind.GameLogic;
 
-    internal class ConsolePlayer : Player
+    internal class ConsolePlayer : IPlayer
     {
         private readonly IConsole _Console;
+        private int _NumberOfDifferentPegs;
+        private int _NumberOfPegsPerLine;
+        private int _MaxNumberOfGuesses;
+
 
         public ConsolePlayer(IConsole console)
         {
             _Console = console;
         }
 
-        public override void BeginGame(IGame game)
+        public void BeginGame(int numberOfDifferentPegs, int numberOfPegsPerLine, int maxNumberOfGuesses)
         {
-            _Console.WriteLine($"The valid pegs are from 0 to {game.NumberOfPegs - 1}");
-            _Console.WriteLine($"There are {game.NumberOfPegsPerLine} pegs per line");
+            _NumberOfDifferentPegs = numberOfDifferentPegs;
+            _NumberOfPegsPerLine = numberOfPegsPerLine;
+            _MaxNumberOfGuesses = maxNumberOfGuesses;
+            _Console.WriteLine($"The valid pegs are from 0 to {_NumberOfDifferentPegs - 1}");
+            _Console.WriteLine($"There are {_NumberOfPegsPerLine} pegs per line");
+            _Console.WriteLine($"You have {_MaxNumberOfGuesses} guesses to guess the secret");
+            _Console.WriteLine("");
         }
 
-        public override void EndGame(IGame game, GamePlayResult result)
+        public int[] GetGuess()
         {
-            PrintLastResult(game);
-            if (result.WasTheSecretGuessed)
+            _Console.Write("Guess:");
+            var pegs = new int[_NumberOfPegsPerLine];
+            for (var i = 0; i < _NumberOfPegsPerLine; i++)
             {
-                _Console.WriteLine($"Game completed - The secret was guessed in {game.GuessesAndResults.Count} tries");
+                pegs[i] = ReadPeg();
+            }
+            return pegs;
+        }
+
+
+        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        {
+            _Console.WriteLine($" | Correct: {correctColorAndCorrectPosition} | Wrong position: {corectColorWrongAndWrongPosition}");
+        }
+
+        public void EndGame(bool wasTheSecretGuessed, int numberOfGuesses, int[] secret)
+        {
+            if (wasTheSecretGuessed)
+            {
+                _Console.WriteLine($"Game completed - The secret was guessed in {numberOfGuesses} tries");
             }
             else
             {
-                _Console.WriteLine($"Game over - The secret was not guessed in {game.MaxNumberOfGuesses} tries");
-                _Console.WriteLine($"The secret was: {string.Join(" ", result.Secret.Pegs.Select(p => p.Number))}");
+                _Console.WriteLine($"Game over - The secret was not guessed in {_MaxNumberOfGuesses} tries");
+                _Console.WriteLine($"The secret was: {string.Join(" ", secret)}");
             }
         }
 
-        public override Line GetGuess(IGame game)
-        {
-            PrintLastResult(game);
-            return ReadLine(game);
-        }
-
-        public void PrintLastResult(IGame game)
-        {
-            if (game.GuessesAndResults.Count > 0)
-            {
-                var result = game.GuessesAndResults.Last().Result;
-                _Console.WriteLine($" | Correct: {result.NumberOfCorrectPegs} | Wrong position: {result.NumberOfCorrectColoredPegsInWrongPosition}");
-            }
-        }
-
-        private Line ReadLine(IGame game)
-        {
-            _Console.Write("Guess:");
-            var pegs = new List<Peg>();
-            for (var i = 0; i < game.NumberOfPegsPerLine; i++)
-            {
-                pegs.Add(ReadPeg(game));
-            }
-            return new Line(pegs.ToArray());
-        }
-        private Peg ReadPeg(IGame game)
+        private int ReadPeg()
         {
             _Console.Write(" ");
             var top = _Console.CursorTop;
@@ -70,9 +68,9 @@ namespace Mastermind.HumanPlayer
                 var c = keyInfo.KeyChar;
                 if (int.TryParse(c.ToString(), out var number))
                 {
-                    if (number >= 0 && number < game.NumberOfPegs)
+                    if (number >= 0 && number < _NumberOfDifferentPegs)
                     {
-                        return new Peg(number);
+                        return number;
                     }
                 }
                 _Console.SetCursorPosition(left, top);

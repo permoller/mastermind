@@ -2,14 +2,14 @@ namespace Mastermind.GameLogic
 {
     public class Result
     {
-        public int NumberOfCorrectPegs { get; }
+        public int NumberOfPegsWithCorrectColorAndCorrectPosition { get; }
 
-        public int NumberOfCorrectColoredPegsInWrongPosition { get; }
+        public int NumberOfPegsWithCorrectColorAndWrongPosition { get; }
 
         public Result(int correct, int wrongPosition)
         {
-            NumberOfCorrectPegs = correct;
-            NumberOfCorrectColoredPegsInWrongPosition = wrongPosition;
+            NumberOfPegsWithCorrectColorAndCorrectPosition = correct;
+            NumberOfPegsWithCorrectColorAndWrongPosition = wrongPosition;
         }
     }
 }

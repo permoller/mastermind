@@ -37,7 +37,7 @@
             }
         }
 
-        private static IReadOnlyCollection<Player> GetPlayers(string mastermindDirectory)
+        private static IReadOnlyCollection<IPlayer> GetPlayers(string mastermindDirectory)
         {
             List<Type> playerTypes = new List<Type>();
             Console.WriteLine();
@@ -52,8 +52,9 @@
                     assembly
                     .GetExportedTypes()
                     .Where(t =>
-                        t.IsSubclassOf(typeof(Player)) &&
+                        t.GetInterfaces().Contains(typeof(IPlayer)) &&
                         !t.IsAbstract &&
+                        !t.IsGenericType &&
                         t.GetConstructor(new Type[0]) != null)
                     .Select(t => t));
 
@@ -68,12 +69,12 @@
             Console.Write("Enter the numbers of the players to use (or nothing to use all): ");
             var playerNumbers = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(playerNumbers))
-                return playerTypes.Select(t => (Player)Activator.CreateInstance(t)).ToList();
+                return playerTypes.Select(t => (IPlayer)Activator.CreateInstance(t)).ToList();
             return playerNumbers
                 .Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => int.Parse(s.Trim()))
                 .Select(i => playerTypes[i])
-                .Select(t => (Player)Activator.CreateInstance(t))
+                .Select(t => (IPlayer)Activator.CreateInstance(t))
                 .ToList();
         }
 
@@ -96,7 +97,7 @@
 
         private static Stopwatch _Stopwatch = new Stopwatch();
 
-        private static void PrintPlayer(Player player)
+        private static void PrintPlayer(IPlayer player)
         {
             var line = "---------------------------------------------";
             Console.WriteLine(line);
@@ -111,7 +112,7 @@
             Console.WriteLine();
             foreach (var guessAndResult in game.GuessesAndResults)
             {
-                Console.WriteLine("Guess: " + string.Join(" ", guessAndResult.Guess.Pegs.Select(p => p.Number)) + " | Correct: " + guessAndResult.Result.NumberOfCorrectPegs + " | Wrong position: " + guessAndResult.Result.NumberOfCorrectColoredPegsInWrongPosition);
+                Console.WriteLine("Guess: " + string.Join(" ", guessAndResult.Guess.Pegs.Select(p => p.Number)) + " | Correct: " + guessAndResult.Result.NumberOfPegsWithCorrectColorAndCorrectPosition + " | Wrong position: " + guessAndResult.Result.NumberOfPegsWithCorrectColorAndWrongPosition);
             }
             Console.WriteLine("Secret: " + string.Join(" ", result.Secret.Pegs.Select(p => p.Number)));
             Console.WriteLine("Was secret guessed: " + result.WasTheSecretGuessed);

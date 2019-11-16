@@ -2,23 +2,29 @@ using Mastermind.GameLogic;
 
 namespace Mastermind.HumanPlayer
 {
-    public class HumanPlayer : Player
+    // this class is just here to expose the ConsolePlayer functionality without having to make the interals public
+    public class HumanPlayer : IPlayer
     {
-        Player player = new ConsolePlayer(new ConsoleWrapper());
+        IPlayer _Player = new ConsolePlayer(new ConsoleWrapper());
 
-        public override void BeginGame(IGame game)
+        public void BeginGame(int numberOfDifferentPegs, int numberOfPegsPerLine, int maxNumberOfGuesses)
         {
-            player.BeginGame(game);
+            _Player.BeginGame(numberOfDifferentPegs, numberOfPegsPerLine, maxNumberOfGuesses);
         }
 
-        public override Line GetGuess(IGame game)
+        public void EndGame(bool wasTheSecretGuessed, int numberOfGuesses, int[] secret)
         {
-            return player.GetGuess(game);
+            _Player.EndGame(wasTheSecretGuessed, numberOfGuesses, secret);
         }
 
-        public override void EndGame(IGame game, GamePlayResult result)
+        public int[] GetGuess()
         {
-            player.EndGame(game, result);
+            return _Player.GetGuess();
+        }
+
+        public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)
+        {
+            _Player.ResultFromPreviousGuess(correctColorAndCorrectPosition, corectColorWrongAndWrongPosition);
         }
     }
 }
