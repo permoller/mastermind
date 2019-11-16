@@ -1,5 +1,3 @@
-using System;
-
 namespace Mastermind.GameLogic
 {
     public class Result
