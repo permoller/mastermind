@@ -30,8 +30,8 @@ namespace Mastermind.GameLogic.Tests
         public void GiveTheExpectedResult(int guessPeg1, int guessPeg2, int secretPeg1, int secretPeg2, int expectedCorrect, int expectedWrongPosition)
         {
             var lineComparer = new LineComparer();
-            var guess = new Line(guessPeg1, guessPeg2);
-            var secret = new Line(secretPeg1, secretPeg2);
+            var guess = new int[] { guessPeg1, guessPeg2 };
+            var secret = new int[] { secretPeg1, secretPeg2 };
             var actualResult = lineComparer.Compare(guess, secret);
             Assert.Equal(expectedCorrect, actualResult.NumberOfPegsWithCorrectColorAndCorrectPosition);
             Assert.Equal(expectedWrongPosition, actualResult.NumberOfPegsWithCorrectColorAndWrongPosition);

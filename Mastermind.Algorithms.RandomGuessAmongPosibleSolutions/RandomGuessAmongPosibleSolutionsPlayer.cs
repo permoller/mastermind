@@ -9,8 +9,8 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
         private int _NumberOfDifferentPegs;
         private int _NumberOfPegsPerLine;
         private int _MaxNumberOfGuesses;
-        private Line _Guess;
-        private IList<Line> _PosibleSolutions;
+        private int[] _Guess;
+        private IList<int[]> _PosibleSolutions;
         private Random _Random = new Random();
         private LineComparer _LineComparer = new LineComparer();
 
@@ -20,20 +20,20 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
             _NumberOfPegsPerLine = numberOfPegsPerLine;
             _MaxNumberOfGuesses = maxNumberOfGuesses;
             _Guess = null;
-            _PosibleSolutions = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new Peg[0]).ToList();
+            _PosibleSolutions = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new int[0]).ToList();
         }
 
-        private static IEnumerable<Line> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<Peg> pegs)
+        private static IEnumerable<int[]> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<int> pegs)
         {
             if (remainingNumberOfPegsInLine == 0)
             {
-                yield return new Line(pegs.ToArray());
+                yield return pegs.ToArray();
             }
             else
             {
-                for (int number = 0; number < numberOfPegs; number++)
+                for (int peg = 0; peg < numberOfPegs; peg++)
                 {
-                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(new Peg(number)));
+                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(peg));
                     foreach (var line in lines)
                     {
                         yield return line;
@@ -45,7 +45,7 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
         public int[] GetGuess()
         {
             // return a random line from the remaining lines that could be the secret
-            return (_Guess = _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)]).Pegs.Select(p => p.Number).ToArray();
+            return _Guess = _PosibleSolutions[_Random.Next(0, _PosibleSolutions.Count - 1)];
         }
 
         public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)

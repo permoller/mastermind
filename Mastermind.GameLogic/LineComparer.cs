@@ -4,12 +4,12 @@ namespace Mastermind.GameLogic
 
     public class LineComparer
     {
-        public Result Compare(Line guess, Line secret)
+        public Result Compare(int[] guess, int[] secret)
         {
-            if (guess.Pegs.Count != secret.Pegs.Count)
-                throw new ArgumentException($"Peg count of {nameof(guess)} ({guess.Pegs.Count}) is different from {nameof(secret)} ({secret.Pegs.Count})");
+            if (guess.Length != secret.Length)
+                throw new ArgumentException($"Peg count of {nameof(guess)} ({guess.Length}) is different from {nameof(secret)} ({secret.Length})");
 
-            var numberOfPegsPerLine = guess.Pegs.Count;
+            var numberOfPegsPerLine = guess.Length;
 
             if (numberOfPegsPerLine <= 0)
                 throw new ArgumentException("There must be at least one peg in the lines.");
@@ -17,16 +17,13 @@ namespace Mastermind.GameLogic
             int correct = 0;
             int wrongPosition = 0;
 
-            var secretPegs = secret.Pegs;
-            var guessPegs = guess.Pegs;
-
             var secretPegsUsed = new bool[numberOfPegsPerLine];
             var guessPegsUsed = new bool[numberOfPegsPerLine];
 
             // find pegs with the correct color at the correct position
             for (var i = 0; i < numberOfPegsPerLine; i++)
             {
-                if (secretPegs[i].Number == guessPegs[i].Number)
+                if (secret[i] == guess[i])
                 {
                     secretPegsUsed[i] = true;
                     guessPegsUsed[i] = true;
@@ -39,13 +36,13 @@ namespace Mastermind.GameLogic
             {
                 if (guessPegsUsed[guessIndex])
                     continue;
-                var guessPeg = guessPegs[guessIndex];
+                var guessPeg = guess[guessIndex];
                 for (var secretIndex = 0; secretIndex < numberOfPegsPerLine; secretIndex++)
                 {
                     if (secretPegsUsed[secretIndex])
                         continue;
-                    var secretPeg = secretPegs[secretIndex];
-                    if (guessPeg.Number == secretPeg.Number)
+                    var secretPeg = secret[secretIndex];
+                    if (guessPeg == secretPeg)
                     {
                         secretPegsUsed[secretIndex] = true;
                         guessPegsUsed[guessIndex] = true;

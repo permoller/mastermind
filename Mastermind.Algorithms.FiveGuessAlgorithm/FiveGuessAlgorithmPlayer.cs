@@ -27,9 +27,9 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
         private int _NumberOfDifferentPegs;
         private int _NumberOfPegsPerLine;
         private int _MaxNumberOfGuesses;
-        private IList<Line> _PosibleSolutions;
-        private IReadOnlyList<Line> _AllLines;
-        private IList<Line> _UsedGuesses;
+        private IList<int[]> _PosibleSolutions;
+        private IReadOnlyList<int[]> _AllLines;
+        private IList<int[]> _UsedGuesses;
         private LineComparer _LineComparer = new LineComparer();
 
         public void BeginGame(int numberOfDifferentPegs, int numberOfPegsPerLine, int maxNumberOfGuesses)
@@ -37,23 +37,23 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
             _NumberOfDifferentPegs = numberOfDifferentPegs;
             _NumberOfPegsPerLine = numberOfPegsPerLine;
             _MaxNumberOfGuesses = maxNumberOfGuesses;
-            _UsedGuesses = new List<Line>();
+            _UsedGuesses = new List<int[]>();
 
             // 1. Create the set S of 1296 possible codes(1111, 1112... 6665, 6666)
-            _AllLines = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new Peg[0]).ToList();
+            _AllLines = GenerateAllLines(_NumberOfDifferentPegs, _NumberOfPegsPerLine, new int[0]).ToList();
             _PosibleSolutions = _AllLines.ToList();
         }
-        private static IEnumerable<Line> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<Peg> pegs)
+        private static IEnumerable<int[]> GenerateAllLines(int numberOfPegs, int remainingNumberOfPegsInLine, IEnumerable<int> pegs)
         {
             if (remainingNumberOfPegsInLine == 0)
             {
-                yield return new Line(pegs.ToArray());
+                yield return pegs.ToArray();
             }
             else
             {
-                for (int number = 0; number < numberOfPegs; number++)
+                for (int peg = 0; peg < numberOfPegs; peg++)
                 {
-                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(new Peg(number)));
+                    var lines = GenerateAllLines(numberOfPegs, remainingNumberOfPegsInLine - 1, pegs.Append(peg));
                     foreach (var line in lines)
                     {
                         yield return line;
@@ -64,16 +64,16 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
 
         public int[] GetGuess()
         {
-            Line guess;
+            int[] guess;
             if (!_UsedGuesses.Any())
             {
                 // 2. Start with initial guess 1122
-                guess = new Line(Enumerable.Range(0, _NumberOfPegsPerLine).Select(i => new Peg((i % _NumberOfDifferentPegs) / 2)).ToArray());
+                guess = Enumerable.Range(0, _NumberOfPegsPerLine).Select(i => (i % _NumberOfDifferentPegs) / 2).ToArray();
             }
             else
             {
                 // 6. Apply minimax technique to find a next guess as follows: 
-                var guessesWithMaximumScore = new List<Line>();
+                var guessesWithMaximumScore = new List<int[]>();
                 var maximumScore = 0;
                 // For each possible guess, that is, any unused code of the 1296 not just those in S,
                 var possibleGuesses = _AllLines.Except(_UsedGuesses);
@@ -122,12 +122,12 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
 
             // 3. Play the guess to get a response of colored and white pegs.
             _UsedGuesses.Add(guess);
-            return guess.Pegs.Select(p => p.Number).ToArray();
+            return guess;
         }
 
-        private bool IsEqual(Line x, Line y)
+        private bool IsEqual(int[] x, int[] y)
         {
-            return Enumerable.SequenceEqual(x.Pegs.Select(p => p.Number), y.Pegs.Select(p => p.Number));
+            return Enumerable.SequenceEqual(x, y);
         }
 
         public void ResultFromPreviousGuess(int correctColorAndCorrectPosition, int corectColorWrongAndWrongPosition)

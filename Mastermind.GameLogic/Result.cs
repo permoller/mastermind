@@ -6,7 +6,7 @@ namespace Mastermind.GameLogic
 
         public int NumberOfPegsWithCorrectColorAndWrongPosition { get; }
 
-        public Result(int correct, int wrongPosition)
+        internal Result(int correct, int wrongPosition)
         {
             NumberOfPegsWithCorrectColorAndCorrectPosition = correct;
             NumberOfPegsWithCorrectColorAndWrongPosition = wrongPosition;

@@ -2,13 +2,13 @@ namespace Mastermind.GameLogic
 {
     public class GuessAndResult
     {
-        public GuessAndResult(Line guess, Result result)
+        public GuessAndResult(int[] guess, Result result)
         {
             Guess = guess;
             Result = result;
         }
 
-        public Line Guess { get; }
+        public int[] Guess { get; }
 
         public Result Result { get; }
     }

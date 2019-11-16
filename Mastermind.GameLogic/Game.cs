@@ -12,7 +12,7 @@ namespace Mastermind.GameLogic
 
         private readonly int _MaxNumberOfGuesses;
 
-        private readonly Line _SecretLine;
+        private readonly int[] _SecretLine;
 
         private readonly LineComparer _LineComparer;
 
@@ -39,19 +39,19 @@ namespace Mastermind.GameLogic
             _NumberOfDifferentPegs = numberOfDifferentPegs;
             _NumberOfPegsPerLine = numberOfPegsPerLine;
             _MaxNumberOfGuesses = maxNumberOfGuesses;
-            _SecretLine = new Line(secret.Select(i => new Peg(i)).ToArray());
+            _SecretLine = secret;
             _LineComparer = new LineComparer();
             ValidateLine(_SecretLine);
         }
 
-        private void ValidateLine(Line line)
+        private void ValidateLine(int[] line)
         {
             if (line is null)
                 throw new ArgumentNullException("Line is null.");
-            if (line.Pegs.Count != _NumberOfPegsPerLine)
-                throw new ArgumentException($"Incorrect number of pegs. Expected {_NumberOfPegsPerLine}. Got {line.Pegs.Count}.");
-            if (line.Pegs.Any(p => p.Number < 0 || p.Number >= _NumberOfDifferentPegs))
-                throw new ArgumentException($"Peg is out of range. Expected less than {_NumberOfDifferentPegs}. Got {string.Join(" ", line.Pegs.Select(p => p.Number))}.");
+            if (line.Length != _NumberOfPegsPerLine)
+                throw new ArgumentException($"Incorrect number of pegs. Expected {_NumberOfPegsPerLine}. Got {line.Length}.");
+            if (line.Any(p => p < 0 || p >= _NumberOfDifferentPegs))
+                throw new ArgumentException($"Peg is out of range. Expected less than {_NumberOfDifferentPegs}. Got {string.Join(" ", line)}.");
         }
 
         public GamePlayResult Play(IPlayer player)
@@ -59,10 +59,10 @@ namespace Mastermind.GameLogic
             _GuessesAndResults.Clear();
             player.BeginGame(_NumberOfDifferentPegs, _NumberOfPegsPerLine, _MaxNumberOfGuesses);
             Result result;
-            Line guess;
+
             do
             {
-                guess = new Line(player.GetGuess().Select(i => new Peg(i)).ToArray());
+                var guess = player.GetGuess();
                 ValidateLine(guess);
                 result = _LineComparer.Compare(guess, _SecretLine);
                 _GuessesAndResults.Add(new GuessAndResult(guess, result));
@@ -70,7 +70,7 @@ namespace Mastermind.GameLogic
             } while (result.NumberOfPegsWithCorrectColorAndCorrectPosition != _NumberOfPegsPerLine && _GuessesAndResults.Count < _MaxNumberOfGuesses);
             var wasTheSecretGuessed = result.NumberOfPegsWithCorrectColorAndCorrectPosition == _NumberOfPegsPerLine;
             var gameResult = new GamePlayResult(wasTheSecretGuessed, _SecretLine);
-            player.EndGame(wasTheSecretGuessed, _GuessesAndResults.Count, _SecretLine.Pegs.Select(p => p.Number).ToArray());
+            player.EndGame(wasTheSecretGuessed, _GuessesAndResults.Count, _SecretLine);
             return gameResult;
         }
     }
