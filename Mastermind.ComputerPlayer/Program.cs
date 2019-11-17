@@ -9,10 +9,11 @@
     using Mastermind.GameLogic;
     class Program
     {
+
         static void Main(string[] args)
         {
             string mastermindDirectory = GetMastermindDirectory();
-            var players = GetPlayers(mastermindDirectory);
+            var players = GetPlayers(mastermindDirectory, args);
 
             var random = new Random();
             var gamesToTestFunctionalityOfPlayer = new Game[]
@@ -36,13 +37,26 @@
                     PrintGameResult(result);
                 }
             }
+
+            PrintPerformanceCounters();
         }
 
-        private static IReadOnlyCollection<IPlayer> GetPlayers(string mastermindDirectory)
+        private static void PrintPerformanceCounters()
+        {
+            Console.WriteLine();
+            var p = Process.GetCurrentProcess();
+            var maxMemoryUsageBytes = p.PeakWorkingSet64;
+            var maxMemoryUsageMB = maxMemoryUsageBytes / 1024m / 1024m;
+            Console.WriteLine($"Peak memory usage: {maxMemoryUsageMB:N2} MB ({maxMemoryUsageBytes:N0} Bytes)");
+            var duration = DateTime.Now - p.StartTime;
+            Console.WriteLine($"Total duration: {duration.TotalSeconds:N3} s ({duration.Ticks} ticks)");
+        }
+
+        private static IReadOnlyCollection<IPlayer> GetPlayers(string mastermindDirectory, string[] playerNames)
         {
             List<Type> playerTypes = new List<Type>();
             Console.WriteLine();
-            Console.WriteLine("Scanning for players in " + mastermindDirectory);
+            Console.WriteLine($"Scanning for players in {mastermindDirectory}");
             Console.WriteLine();
             var dllFiles = Directory.GetFiles(mastermindDirectory, "Mastermind.Algorithms.*.dll", SearchOption.AllDirectories);
             foreach (var dllFile in dllFiles)
@@ -67,16 +81,33 @@
                 Console.WriteLine();
             }
             Console.WriteLine();
-            Console.Write("Enter the numbers of the players to use (or nothing to use all): ");
-            var playerNumbers = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(playerNumbers))
-                return playerTypes.Select(t => (IPlayer)Activator.CreateInstance(t)).ToList();
-            return playerNumbers
-                .Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => int.Parse(s.Trim()))
-                .Select(i => playerTypes[i])
-                .Select(t => (IPlayer)Activator.CreateInstance(t))
-                .ToList();
+
+            if (playerNames != null && playerNames.Any())
+            {
+                if (!playerNames[0].Equals("all", StringComparison.OrdinalIgnoreCase))
+                {
+                    playerTypes = playerNames.Select(n =>
+                    int.TryParse(n, out var index) ? playerTypes[index] :
+                    playerTypes.FirstOrDefault(t => t.FullName.Equals(n, StringComparison.OrdinalIgnoreCase)) ??
+                    playerTypes.FirstOrDefault(t => t.Name.Equals(n, StringComparison.OrdinalIgnoreCase)) ??
+                    playerTypes.FirstOrDefault(t => t.FullName.Contains(n, StringComparison.OrdinalIgnoreCase)) ??
+                    throw new Exception($"Player {n} not found.")).ToList();
+                }
+            }
+            else
+            {
+                Console.Write("Enter the numbers of the players to use (or nothing to use all): ");
+                var playerNumbers = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(playerNumbers))
+                {
+                    playerTypes = playerNumbers
+                        .Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => int.Parse(s.Trim()))
+                        .Select(i => playerTypes[i])
+                        .ToList();
+                }
+            }
+            return playerTypes.Select(t => (IPlayer)Activator.CreateInstance(t)).ToList();
         }
 
         private static string GetMastermindDirectory()
@@ -87,7 +118,7 @@
                                 .GetCurrentDirectory()
                                 .Split(Path.DirectorySeparatorChar)
                                 .Reverse()
-                                .SkipWhile(directoryName => !StringComparer.OrdinalIgnoreCase.Equals(directoryName, "Mastermind"))
+                                .SkipWhile(directoryName => !"Mastermind".Equals(directoryName, StringComparison.OrdinalIgnoreCase))
                                 .Reverse());
             if (string.IsNullOrWhiteSpace(mastermindDirectory))
             {
@@ -120,9 +151,9 @@
                     " | Wrong position: " +
                     guessAndResult.Result.NumberOfPegsAtWrongPosition);
             }
-            Console.WriteLine("Secret: " + string.Join(" ", result.Secret));
-            Console.WriteLine("Was secret guessed: " + result.WasTheSecretGuessed);
-            Console.WriteLine("Duration in ms: " + _Stopwatch.ElapsedMilliseconds);
+            Console.WriteLine($"Secret: {string.Join(" ", result.Secret)}");
+            Console.WriteLine($"Was secret guessed: {result.WasTheSecretGuessed}");
+            Console.WriteLine($"Duration: {_Stopwatch.Elapsed.TotalSeconds:N3} s ({_Stopwatch.ElapsedTicks} ticks)");
             _Stopwatch.Restart();
         }
     }
