@@ -44,7 +44,7 @@
             Console.WriteLine();
             Console.WriteLine("Scanning for players in " + mastermindDirectory);
             Console.WriteLine();
-            var dllFiles = Directory.GetFiles(mastermindDirectory, "*.dll", SearchOption.AllDirectories);
+            var dllFiles = Directory.GetFiles(mastermindDirectory, "Mastermind.Algorithms.*.dll", SearchOption.AllDirectories);
             foreach (var dllFile in dllFiles)
             {
 
