@@ -6,39 +6,74 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
     using Mastermind.GameLogic;
     class Program
     {
 
         static void Main(string[] args)
         {
+            _Stopwatch.Start();
             string mastermindDirectory = GetMastermindDirectory();
-            var players = GetPlayers(mastermindDirectory, args);
+            var playerTypes = GetPlayerTypes(mastermindDirectory, args);
 
-            var random = new Random();
-            var gamesToTestFunctionalityOfPlayer = new Game[]
+            if (playerTypes.Count == 1)
             {
-                // small size game (4 different lines) with many of tries - normally player will win
-                new Game(2, 2, 20),
-                // medium size game (1296 different lines) with few tries - normally player will lose
-                new Game(6, 4, 2),
-                // random game small to medium size game
-                new Game(random.Next(2,6), random.Next(2,4), random.Next(2,10)),
-                // large size game (32768 different lines) with many tries
-                new Game(8,5,20)
-            };
+                var player = (IPlayer)Activator.CreateInstance(playerTypes.Single());
+                var random = new Random();
+                var games = GenerateAllGames(6, 4, new int[0]);
+                var results = new List<Tuple<GamePlayResult, TimeSpan>>((int)Math.Pow(6, 4));
 
-            foreach (var player in players)
-            {
                 PrintPlayer(player);
-                foreach (var game in gamesToTestFunctionalityOfPlayer)
+                _Stopwatch.Stop();
+                var initializationTicks = _Stopwatch.ElapsedTicks;
+                foreach (var game in games)
                 {
+                    _Stopwatch.Restart();
                     var result = game.Play(player);
-                    PrintGameResult(result);
+                    _Stopwatch.Stop();
+                    results.Add(new Tuple<GamePlayResult, TimeSpan>(result, _Stopwatch.Elapsed));
+                    if (result.Secret[2] == 0 && result.Secret[3] == 0)
+                    {
+                        Console.Write(" " + string.Join(" ", result.Secret) + "\r");
+                    }
+                    //PrintGameResult(result);
+                }
+                Console.WriteLine(" " + string.Join(" ", results.Last().Item1.Secret));
+
+                PrintPerformanceCounters();
+                Console.WriteLine($"Initialization: {FormatTicks(initializationTicks)}");
+                PrintResults(results);
+            }
+            else
+            {
+                foreach (var playerType in playerTypes)
+                {
+                    var fileName = Process.GetCurrentProcess().MainModule.FileName;
+                    var p = Process.Start(fileName, Path.GetFileName(playerType.Assembly.Location) + " " + playerType.FullName);
+                    p.WaitForExit();
                 }
             }
+        }
 
-            PrintPerformanceCounters();
+        private static IEnumerable<Game> GenerateAllGames(int numberOfDifferentPegs, int remainingNumberOfPegsInLine, IEnumerable<int> pegs)
+        {
+            if (remainingNumberOfPegsInLine == 0)
+            {
+                var line = pegs.ToArray();
+                yield return new Game(numberOfDifferentPegs, line.Length, 10, line);
+            }
+            else
+            {
+                for (int peg = 0; peg < numberOfDifferentPegs; peg++)
+                {
+                    var games = GenerateAllGames(numberOfDifferentPegs, remainingNumberOfPegsInLine - 1, pegs.Append(peg));
+                    foreach (var game in games)
+                    {
+                        yield return game;
+                    }
+                }
+            }
         }
 
         private static void PrintPerformanceCounters()
@@ -52,16 +87,22 @@
             Console.WriteLine($"Total duration: {duration.TotalSeconds:N3} s ({duration.Ticks} ticks)");
         }
 
-        private static IReadOnlyCollection<IPlayer> GetPlayers(string mastermindDirectory, string[] playerNames)
+        private static IReadOnlyCollection<Type> GetPlayerTypes(string mastermindDirectory, string[] playerNames)
         {
             List<Type> playerTypes = new List<Type>();
             Console.WriteLine();
             Console.WriteLine($"Scanning for players in {mastermindDirectory}");
             Console.WriteLine();
-            var dllFiles = Directory.GetFiles(mastermindDirectory, "Mastermind.Algorithms.*.dll", SearchOption.AllDirectories);
+            var dllFileNamePattern = "Mastermind.Algorithms.*.dll";
+            if (playerNames.Length > 0 && Regex.IsMatch(playerNames[0], "Mastermind\\.Algorithms\\..+\\.dll"))
+            {
+                dllFileNamePattern = playerNames[0];
+                playerNames = playerNames.Skip(1).ToArray();
+            }
+            var dllFiles = Directory.GetFiles(mastermindDirectory, dllFileNamePattern, SearchOption.AllDirectories);
             foreach (var dllFile in dllFiles)
             {
-
+                var dllFileName = Path.GetFileName(dllFile);
                 var assembly = Assembly.LoadFrom(dllFile);
                 playerTypes.AddRange(
                     assembly
@@ -107,7 +148,7 @@
                         .ToList();
                 }
             }
-            return playerTypes.Select(t => (IPlayer)Activator.CreateInstance(t)).ToList();
+            return playerTypes;
         }
 
         private static string GetMastermindDirectory()
@@ -135,12 +176,10 @@
             Console.WriteLine(line);
             Console.WriteLine(player.GetType().Name);
             Console.WriteLine(line);
-            _Stopwatch.Restart();
         }
 
         private static void PrintGameResult(GamePlayResult result)
         {
-            _Stopwatch.Stop();
             Console.WriteLine();
             foreach (var guessAndResult in result.GuessesAndResults)
             {
@@ -153,8 +192,18 @@
             }
             Console.WriteLine($"Secret: {string.Join(" ", result.Secret)}");
             Console.WriteLine($"Was secret guessed: {result.WasTheSecretGuessed}");
-            Console.WriteLine($"Duration: {_Stopwatch.Elapsed.TotalSeconds:N3} s ({_Stopwatch.ElapsedTicks} ticks)");
-            _Stopwatch.Restart();
+            Console.WriteLine($"Duration: {FormatTicks(_Stopwatch.ElapsedTicks)}");
+        }
+
+        private static void PrintResults(IReadOnlyList<Tuple<GamePlayResult, TimeSpan>> results)
+        {
+            Console.WriteLine($"Game count (win/loose): {results.Count(r => r.Item1.WasTheSecretGuessed)} / {results.Count(r => !r.Item1.WasTheSecretGuessed)}");
+            Console.WriteLine($"Guesses per game (min/max/avarage): {results.Min(r => r.Item1.GuessesAndResults.Count)} / {results.Max(r => r.Item1.GuessesAndResults.Count)} / {results.Average(r => r.Item1.GuessesAndResults.Count)}");
+            Console.WriteLine($"Game duration (first/min/max/avarage): {FormatTicks(results.First().Item2.Ticks)} / {FormatTicks(results.Min(r => r.Item2.Ticks))} / {FormatTicks(results.Max(r => r.Item2.Ticks))} / {FormatTicks((long)Math.Round(results.Average(r => r.Item2.Ticks), 0))}");
+        }
+        private static string FormatTicks(long ticks)
+        {
+            return $"{new TimeSpan(ticks).TotalSeconds:N3} s ({ticks} ticks)";
         }
     }
 }
