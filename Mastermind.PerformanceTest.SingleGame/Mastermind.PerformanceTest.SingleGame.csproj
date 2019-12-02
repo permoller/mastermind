@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mastermind.ComputerPlayer\Mastermind.ComputerPlayer.csproj" />
+    <ProjectReference Include="..\Mastermind.GameLogic\Mastermind.GameLogic.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
