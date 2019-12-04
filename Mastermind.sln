@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.Algorithms.FiveG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.Algorithms.RandomGuessAmongPosibleSolutions.Tests", "Mastermind.Algorithms.RandomGuessAmongPosibleSolutions.Tests\Mastermind.Algorithms.RandomGuessAmongPosibleSolutions.Tests.csproj", "{82671B69-FE91-42FE-BA84-DB66ABC1FD80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.PerformanceTest.SingleGame", "Mastermind.PerformanceTest.SingleGame\Mastermind.PerformanceTest.SingleGame.csproj", "{CA47B326-B079-4CBE-8D6C-C73DBFB87B8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.PerformanceTest.AllGames4Pins4PerLine", "Mastermind.PerformanceTest.AllGames4Pins4PerLine\Mastermind.PerformanceTest.AllGames4Pins4PerLine.csproj", "{CA47B326-B079-4CBE-8D6C-C73DBFB87B8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

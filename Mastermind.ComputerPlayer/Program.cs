@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -40,18 +41,37 @@
                     }
                     measurementsPerTestPerPlayer[testType] = measurementsPerPlayer;
                 }
-                foreach (var kvp in measurementsPerTestPerPlayer)
+                PrintMeasurements(measurementsPerTestPerPlayer);
+            }
+        }
+
+        private static void PrintMeasurements(Dictionary<Type, Dictionary<Type, IReadOnlyList<Measurement>>> measurementsPerTestPerPlayer)
+        {
+            var testTypeToMeasurementName = measurementsPerTestPerPlayer.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Values.SelectMany(mm => mm.Select(m => m.Name)).Distinct());
+            var playerTypes = measurementsPerTestPerPlayer.SelectMany(kvp => kvp.Value.Keys).Distinct();
+            var lengthOfLongestPlayerName = playerTypes.Select(t => t.Name.Length).Max();
+
+            foreach (var kvp in measurementsPerTestPerPlayer)
+            {
+                var testType = kvp.Key;
+                var measurementsPerPlayer = kvp.Value;
+                var measurementNames = kvp.Value.Values.SelectMany(mm => mm.Select(m => m.Name)).Distinct();
+                foreach (var name in measurementNames)
                 {
-                    var testType = kvp.Key;
-                    foreach (var kvp2 in kvp.Value)
+                    Console.WriteLine();
+                    Console.WriteLine("-----------------------------------------------------------------------------");
+                    Console.WriteLine($"{testType.Name} - {name}");
+                    Console.WriteLine("-----------------------------------------------------------------------------");
+                    var measurementValuePerPlayer = measurementsPerPlayer.ToDictionary(kvp2 => kvp2.Key, kvp2 => kvp2.Value.FirstOrDefault(m => m.Name == name).Value);
+
+                    foreach (var kvp2 in measurementValuePerPlayer.OrderBy(kvp2 => kvp2.Value))
                     {
-                        var playerType = kvp2.Key;
-                        var measurements = kvp2.Value;
-                        foreach (var measurement in measurements)
-                        {
-                            var line = $"{testType.Name} \t{playerType.Name} \t{measurement.Name} \t{measurement.Value}";
-                            Console.WriteLine(line);
-                        }
+                        var playerName = kvp2.Key.Name.PadRight(lengthOfLongestPlayerName);
+                        var valueAsString = kvp2.Value.ToString(CultureInfo.CurrentCulture);
+                        var seperator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                        var valueSplit = valueAsString.Split(seperator, 2);
+                        valueAsString = valueSplit[0].PadLeft(10) + (valueSplit.Length == 1 ? "" : (seperator + valueSplit[1]));
+                        Console.WriteLine($"\t{playerName} {valueAsString}");
                     }
                 }
             }
