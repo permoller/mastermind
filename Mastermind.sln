@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.HumanPlayer", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.HumanPlayer.Tests", "Mastermind.HumanPlayer.Tests\Mastermind.HumanPlayer.Tests.csproj", "{98D37D6A-131E-4A9A-A7EF-A1C99022CACD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.ComputerPlayer", "Mastermind.ComputerPlayer\Mastermind.ComputerPlayer.csproj", "{5FC4E803-A18D-415F-BDD9-1492A793B2E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.PerformanceTestRunner", "Mastermind.PerformanceTestRunner\Mastermind.PerformanceTestRunner.csproj", "{5FC4E803-A18D-415F-BDD9-1492A793B2E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mastermind.Algorithms.FiveGuessAlgorithm", "Mastermind.Algorithms.FiveGuessAlgorithm\Mastermind.Algorithms.FiveGuessAlgorithm.csproj", "{302DDF83-A258-40BD-AA3F-9604340FD8A6}"
 EndProject

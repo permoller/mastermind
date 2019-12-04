@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Mastermind.ComputerPlayer
+namespace Mastermind.PerformanceTestRunner
 {
     public class Measurement
     {

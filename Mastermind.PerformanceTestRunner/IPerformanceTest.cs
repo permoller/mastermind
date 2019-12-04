@@ -1,4 +1,4 @@
-namespace Mastermind.ComputerPlayer
+namespace Mastermind.PerformanceTestRunner
 {
     using System.Collections.Generic;
     using Mastermind.GameLogic;

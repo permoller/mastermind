@@ -11,5 +11,5 @@ __Directories:__
   - [IPlayer](https://github.com/permoller/mastermind/blob/master/Mastermind.GameLogic/IPlayer.cs): The interface that needs to be implemented by algorithms that tries to guess the secret.
   - [LineComparer](https://github.com/permoller/mastermind/blob/master/Mastermind.GameLogic/LineComparer.cs): The algorithm for comparing a guess to a secret and getting the number of pegs at the correct and wrong position in a [`Result`](https://github.com/permoller/mastermind/blob/master/Mastermind.GameLogic/Result.cs) object. Public so it can be reused by imeplementations of `IPlayer`.
 - __[Mastermind.HumanPlayer](https://github.com/permoller/mastermind/tree/master/Mastermind.HumanPlayer):__ Console application for playing the game manually.
-- __[Mastermind.ComputerPlayer](https://github.com/permoller/mastermind/tree/master/Mastermind.ComputerPlayer):__ Console application for playing the game using the different algorithms implementing `IPlayer`.
+- __[Mastermind.PerformanceTestRunner](https://github.com/permoller/mastermind/tree/master/Mastermind.PerformanceTestRunner):__ Console application for running performance tests using the different algorithms implementing `IPlayer`.
 - __Mastermind.Algorithms.\*:__ Different algorithms implementing `IPlayer`.

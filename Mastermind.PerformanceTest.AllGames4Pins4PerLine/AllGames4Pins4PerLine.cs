@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using Mastermind.ComputerPlayer;
+    using Mastermind.PerformanceTestRunner;
     using Mastermind.GameLogic;
     public class AllGames4Pins4PerLine : IPerformanceTest
     {

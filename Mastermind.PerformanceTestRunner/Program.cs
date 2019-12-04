@@ -1,4 +1,4 @@
-﻿namespace Mastermind.ComputerPlayer
+﻿namespace Mastermind.PerformanceTestRunner
 {
     using System;
     using System.Collections.Generic;
@@ -59,9 +59,9 @@
                 foreach (var name in measurementNames)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("-----------------------------------------------------------------------------");
+                    Console.WriteLine("---------------------------------------------------------------------------");
                     Console.WriteLine($"{testType.Name} - {name}");
-                    Console.WriteLine("-----------------------------------------------------------------------------");
+                    Console.WriteLine("---------------------------------------------------------------------------");
                     var measurementValuePerPlayer = measurementsPerPlayer.ToDictionary(kvp2 => kvp2.Key, kvp2 => kvp2.Value.FirstOrDefault(m => m.Name == name).Value);
 
                     foreach (var kvp2 in measurementValuePerPlayer.OrderBy(kvp2 => kvp2.Value))
