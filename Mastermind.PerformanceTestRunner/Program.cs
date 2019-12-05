@@ -36,6 +36,7 @@
                     var measurementsPerPlayer = new Dictionary<Type, IReadOnlyList<Measurement>>();
                     foreach (var playerType in arguments.PlayersToTest)
                     {
+                        Console.WriteLine($"{testType.Name} - {playerType.Name}");
                         var measurements = TestPlayerInNewProcess(testType, playerType, arguments.Seed);
                         measurementsPerPlayer[playerType] = measurements;
                     }
