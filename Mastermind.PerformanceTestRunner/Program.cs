@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
-    using System.IO;
     using System.Linq;
-    using System.Reflection;
-    using System.Text.RegularExpressions;
     using Mastermind.GameLogic;
+
     class Program
     {
+        private static int _NameColumnWidth = 0;
+        private static int _IntegerValueColumnWidth = 0;
         public static void Main(string[] args)
         {
             var arguments = new Arguments(args);
@@ -30,54 +30,94 @@
                     arguments.TestsToPerform = AskUserForTestsToPerform();
                 }
 
-                var measurementsPerTestPerPlayer = new Dictionary<Type, Dictionary<Type, IReadOnlyList<Measurement>>>();
+
+                Console.WriteLine($"Seed: {arguments.Seed}");
+                var results = new List<Result>();
                 foreach (var testType in arguments.TestsToPerform)
                 {
-                    var measurementsPerPlayer = new Dictionary<Type, IReadOnlyList<Measurement>>();
+
                     foreach (var playerType in arguments.PlayersToTest)
                     {
                         Console.WriteLine($"{testType.Name} - {playerType.Name}");
                         var measurements = TestPlayerInNewProcess(testType, playerType, arguments.Seed);
-                        measurementsPerPlayer[playerType] = measurements;
+                        results.AddRange(measurements.Select(m => new Result(testType, playerType, m)));
                     }
-                    measurementsPerTestPerPlayer[testType] = measurementsPerPlayer;
                 }
-                PrintMeasurements(measurementsPerTestPerPlayer);
+                _NameColumnWidth = Math.Max(results.Max(t => t.PlayerName.Length), results.Max(r => r.Unit != null ? r.Name.Length : 0));
+                _IntegerValueColumnWidth = results.Max(r => ((int)r.Value).ToString(CultureInfo.CurrentCulture).Length);
+                PrintResultsPerTest(results);
+                PrintPlayerRank(results);
             }
         }
 
-        private static void PrintMeasurements(Dictionary<Type, Dictionary<Type, IReadOnlyList<Measurement>>> measurementsPerTestPerPlayer)
+        private static void PrintPlayerRank(IReadOnlyCollection<Result> results)
         {
-            var testTypeToMeasurementName = measurementsPerTestPerPlayer.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Values.SelectMany(mm => mm.Select(m => m.Name)).Distinct());
-            var playerTypes = measurementsPerTestPerPlayer.SelectMany(kvp => kvp.Value.Keys).Distinct();
-            var lengthOfLongestPlayerName = playerTypes.Select(t => t.Name.Length).Max();
-
-            foreach (var kvp in measurementsPerTestPerPlayer)
+            var color = Console.ForegroundColor;
+            try
             {
-                var testType = kvp.Key;
-                var measurementsPerPlayer = kvp.Value;
-                var measurementNames = kvp.Value.Values.SelectMany(mm => mm.Select(m => m.Name)).Distinct();
-                foreach (var name in measurementNames)
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                var winsPerPlayerRanked = results
+                    .Where(r => r.IncludeWhenPickingAWinner)
+                    .GroupBy(r => r.Name)
+                    .Select(g => g.OrderBy(r => r.Value).First().PlayerName)
+                    .GroupBy(p => p)
+                    .Select(g => new { PlayerName = g.Key, NumberOfWins = g.Count() })
+                    .OrderByDescending(x => x.NumberOfWins);
+                PrintHeader("Winner of the most categories", "(number of wins)");
+                foreach (var player in winsPerPlayerRanked)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("---------------------------------------------------------------------------");
-                    Console.WriteLine($"{testType.Name} - {name}");
-                    Console.WriteLine("---------------------------------------------------------------------------");
-                    var measurementValuePerPlayer = measurementsPerPlayer.ToDictionary(kvp2 => kvp2.Key, kvp2 => kvp2.Value.FirstOrDefault(m => m.Name == name).Value);
-
-                    foreach (var kvp2 in measurementValuePerPlayer.OrderBy(kvp2 => kvp2.Value))
-                    {
-                        var playerName = kvp2.Key.Name.PadRight(lengthOfLongestPlayerName);
-                        var valueAsString = kvp2.Value.ToString(CultureInfo.CurrentCulture);
-                        var seperator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-                        var valueSplit = valueAsString.Split(seperator, 2);
-                        valueAsString = valueSplit[0].PadLeft(10) + (valueSplit.Length == 1 ? "" : (seperator + valueSplit[1]));
-                        Console.WriteLine($"\t{playerName} {valueAsString}");
-                    }
+                    PrintResult(player.PlayerName, player.NumberOfWins);
                 }
+            }
+            finally
+            {
+                Console.ForegroundColor = color;
             }
         }
 
+        private static void PrintResultsPerTest(IReadOnlyCollection<Result> results)
+        {
+            var color = Console.ForegroundColor;
+            try
+            {
+                foreach (var resultsForSameMeasurement in results.GroupBy(r => new { Name = r.Name, Unit = r.Unit }))
+                {
+                    Console.ForegroundColor = resultsForSameMeasurement.All(r => r.IncludeWhenPickingAWinner) ? ConsoleColor.Gray : ConsoleColor.DarkGray;
+                    PrintHeader(resultsForSameMeasurement.Key.Name, resultsForSameMeasurement.Key.Unit);
+                    foreach (var result in resultsForSameMeasurement.OrderBy(r => r.Value))
+                    {
+                        Console.ForegroundColor = result.IncludeWhenPickingAWinner ? ConsoleColor.Gray : ConsoleColor.DarkGray;
+                        PrintResult(result.PlayerName, result.Value);
+                    }
+                }
+            }
+            finally
+            {
+                Console.ForegroundColor = color;
+            }
+        }
+
+        private static void PrintHeader(string header, string unit = null)
+        {
+            if (unit != null)
+            {
+                header = $"{header.PadRight(_NameColumnWidth)} {unit.PadLeft(_IntegerValueColumnWidth)}";
+            }
+            var line = "".PadLeft(_NameColumnWidth + 1 /* space */ + _IntegerValueColumnWidth + 1 /*decimal seperator*/ + 15 /* decimals */, '-');
+            Console.WriteLine();
+            Console.WriteLine(line);
+            Console.WriteLine(header);
+            Console.WriteLine(line);
+        }
+        private static void PrintResult(string playerName, double value)
+        {
+            var valueAsString = value.ToString(CultureInfo.CurrentCulture);
+            var seperator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var valueSplit = valueAsString.Split(seperator, 2);
+            valueAsString = valueSplit[0].PadLeft(_IntegerValueColumnWidth) + (valueSplit.Length == 1 ? "" : (seperator + valueSplit[1]));
+
+            Console.WriteLine($"{playerName.PadRight(_NameColumnWidth)} {valueAsString}");
+        }
         private static IReadOnlyList<Type> AskUserForTestsToPerform()
         {
             return TypeResolver.GetAllTypes(typeof(IPerformanceTest));

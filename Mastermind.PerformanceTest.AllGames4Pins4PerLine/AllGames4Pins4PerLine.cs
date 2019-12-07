@@ -39,17 +39,17 @@
 
             swTotal.Stop();
             var process = Process.GetCurrentProcess();
-            yield return new Measurement("Total duration (ms)", swTotal.Elapsed.TotalMilliseconds);
-            yield return new Measurement("Total duration games only (ms)", sw.Elapsed.TotalMilliseconds);
-            yield return new Measurement("Duration first game (ms)", first.Value.TotalMilliseconds);
-            yield return new Measurement("Avarage duration per game (ms)", sw.Elapsed.TotalMilliseconds / games.Count);
-            yield return new Measurement("Minimum number of guesses per game", minNumberOfGuesses);
-            yield return new Measurement("Number of lost games", numberOfLostGames);
+            yield return new Measurement(false, "Total duration (ms)", swTotal.Elapsed.TotalMilliseconds);
+            yield return new Measurement(false, "Total duration games only (ms)", sw.Elapsed.TotalMilliseconds);
+            yield return new Measurement(false, "Duration first game (ms)", first.Value.TotalMilliseconds);
+            yield return new Measurement(false, "Avarage duration per game (ms)", sw.Elapsed.TotalMilliseconds / games.Count);
+            yield return new Measurement(false, "Minimum number of guesses per game", minNumberOfGuesses);
+            yield return new Measurement(false, "Number of lost games", numberOfLostGames);
 
-            yield return new Measurement("Peak working set memory (MB)", (((double)process.PeakWorkingSet64) / 1024) / 1024);
-            yield return new Measurement("Total CPU time (ms)", process.TotalProcessorTime.TotalMilliseconds);
-            yield return new Measurement("Avarage number of guesses per game", ((double)sumNumberOfGuesses) / games.Count);
-            yield return new Measurement("Maximum number of guesses per game", maxNumberOfGuesses);
+            yield return new Measurement(numberOfLostGames == 0, "Peak working set memory (MB)", (((double)process.PeakWorkingSet64) / 1024) / 1024);
+            yield return new Measurement(numberOfLostGames == 0, "Total CPU time (ms)", process.TotalProcessorTime.TotalMilliseconds);
+            yield return new Measurement(numberOfLostGames == 0, "Avarage number of guesses per game", ((double)sumNumberOfGuesses) / games.Count);
+            yield return new Measurement(numberOfLostGames == 0, "Maximum number of guesses per game", maxNumberOfGuesses);
 
         }
 

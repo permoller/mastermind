@@ -1,11 +1,13 @@
+using System;
 using System.Globalization;
 
 namespace Mastermind.PerformanceTestRunner
 {
     public class Measurement
     {
-        public Measurement(string name, double value)
+        public Measurement(bool includeWhenPickingAWinner, string name, double value)
         {
+            IncludeWhenPickingAWinner = includeWhenPickingAWinner;
             Name = name;
             Value = value;
         }
@@ -15,14 +17,23 @@ namespace Mastermind.PerformanceTestRunner
         /// <summary>Small values are considered better than larger values.</sumary>
         public double Value { get; }
 
+        public bool IncludeWhenPickingAWinner { get; }
+
         public override string ToString()
         {
-            return $"{Name}:{Value.ToString(CultureInfo.InvariantCulture)}";
+            return $"{IncludeWhenPickingAWinner}:{Name}:{Value.ToString(CultureInfo.InvariantCulture)}";
         }
         public static Measurement FromString(string str)
         {
-            var split = str.Split(":", 2);
-            return new Measurement(split[0], double.Parse(split[1], CultureInfo.InvariantCulture));
+            try
+            {
+                var split = str.Split(":", 3);
+                return new Measurement(bool.Parse(split[0]), split[1], double.Parse(split[2], CultureInfo.InvariantCulture));
+            }
+            catch (FormatException e)
+            {
+                throw new FormatException("Could not parse measurement: " + str, e);
+            }
         }
     }
 }
