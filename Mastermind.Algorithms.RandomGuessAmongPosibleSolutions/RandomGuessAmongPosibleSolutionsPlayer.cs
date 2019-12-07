@@ -16,7 +16,7 @@ namespace Mastermind.Algorithms.RandomGuessAmongPosibleSolutions
         private int _MaxNumberOfGuesses;
         private int[] _Guess;
         private IList<int[]> _PosibleSolutions;
-        private Random _Random = new Random();
+        private Random _Random = new Random(1);
         private LineComparer _LineComparer = new LineComparer();
 
         public void BeginGame(int numberOfDifferentPegs, int numberOfPegsPerLine, int maxNumberOfGuesses)
