@@ -10,6 +10,7 @@ namespace Mastermind.PerformanceTestRunner
         {
             var testsToPerform = new List<Type>();
             var playersToTest = new List<Type>();
+            Seed = new Random().Next();
             Action<string> parser = null;
             foreach (var arg in args)
             {
@@ -43,7 +44,7 @@ namespace Mastermind.PerformanceTestRunner
                 }
                 else if (EqualsOrdinalIgnoreCase(arg, "--seed") || EqualsOrdinalIgnoreCase(arg, "-s"))
                 {
-                    parser = a => Seed = int.Parse(a);
+                    parser = a => { Seed = int.Parse(a); };
                 }
                 else if (parser is null)
                 {
