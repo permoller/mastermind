@@ -25,12 +25,6 @@
             try
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
-                var resultsOrderedPerCategory = _Results
-                    .Where(r => r.IncludeWhenPickingAWinner)
-                    .GroupBy(r => r.Name)
-                    .Select(g => g.OrderBy(r => r.Value).ToList())
-                    .ToList();
-
                 var playerNames = _Results
                     .Where(r => r.IncludeWhenPickingAWinner)
                     .Select(r => r.PlayerName)
@@ -44,9 +38,14 @@
                 }).ToList();
                 foreach (var player in playerScores)
                 {
-                    for (int i = 0; i < playerNames.Count; i++)
+                    foreach (var results in _Results.Where(r => r.IncludeWhenPickingAWinner).GroupBy(r => r.Name))
                     {
-                        player.Score[i] = resultsOrderedPerCategory.Count(rr => rr.Skip(i).FirstOrDefault()?.PlayerName == player.Name);
+                        var result = results.FirstOrDefault(r => r.PlayerName == player.Name);
+                        if (result != null)
+                        {
+                            var numberOfBetterPlayers = results.Where(r => r.Value < result.Value).Count();
+                            player.Score[numberOfBetterPlayers]++;
+                        }
                     }
                 }
 
