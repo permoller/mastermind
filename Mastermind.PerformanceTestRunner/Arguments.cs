@@ -12,6 +12,7 @@ namespace Mastermind.PerformanceTestRunner
             var playersToTest = new List<Type>();
             Seed = new Random().Next();
             Action<string> parser = null;
+
             foreach (var arg in args)
             {
                 if (EqualsOrdinalIgnoreCase(arg, "--players") || EqualsOrdinalIgnoreCase(arg, "-p"))
@@ -48,11 +49,18 @@ namespace Mastermind.PerformanceTestRunner
                 }
                 else if (parser is null)
                 {
-                    throw new ArgumentException("parameters: --players FiveGuess RandomGuess -tests all");
+                    throw new ArgumentException($"'{arg}' not recognized as valid option. Example of valid options are: --players FiveGuess RandomGuess -tests all");
                 }
                 else
                 {
-                    parser(arg);
+                    try
+                    {
+                        parser(arg);
+                    }
+                    catch (FormatException e)
+                    {
+                        throw new ArgumentException($"Could not parse argument {arg}", e);
+                    }
                 }
             }
             TestsToPerform = testsToPerform;
