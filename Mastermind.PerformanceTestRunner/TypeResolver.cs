@@ -29,9 +29,10 @@ namespace Mastermind.PerformanceTestRunner
         {
             var searchPattern = $"*.dll";
             return Directory.GetFiles(rootDirectory, searchPattern, SearchOption.AllDirectories)
-                .GroupBy(f => Path.GetFileName(f))
+                .GroupBy(p => Path.GetFileName(p))
                 .Select(g => g.Count() == 1 ? g.Single() : SelectTheDllInTheBinDirectory(g))
-                .Where(f => !(f is null))
+                .Where(p => !(p is null))
+                .Where(p => !p.EndsWith(".Tests.dll") && !p.EndsWith(".Test.dll"))
                 .ToList();
         }
 
