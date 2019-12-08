@@ -11,7 +11,7 @@ namespace Mastermind.PerformanceTestRunner
             Value = measurement.Value;
 
             IncludeWhenPickingAWinner = measurement.IncludeWhenPickingAWinner;
-            var m = Regex.Match(measurement.Name, "^(.+) *(\\(.+\\))$");
+            var m = Regex.Match(measurement.Name, "^(.+) *\\((.+)\\)$");
             var measurementName = measurement.Name;
             if (m.Success)
             {
