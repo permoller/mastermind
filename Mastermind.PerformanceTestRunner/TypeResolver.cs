@@ -7,11 +7,18 @@ namespace Mastermind.PerformanceTestRunner
     using System.Reflection;
     internal static class TypeResolver
     {
-        internal static Type GetTypeInAssembly(string assemblySearchString, Type type)
+        internal static IReadOnlyList<Type> GetTypeInAssemblies(string assemblySearchString, Type type)
         {
             var rootDirectory = GetMastermindDirectory();
-            var assembly = GetSingleAssembly(rootDirectory, assemblySearchString);
-            return GetSingleType(assembly, type);
+            var assemblies = GetAssembies(rootDirectory, assemblySearchString);
+            var types = assemblies.Select(a => GetSingleOrNoType(a, type)).Where(t => !(t is null)).ToList();
+            if (!types.Any())
+            {
+                var message = $"Did not find type {type.Name} in any of the assemblies.";
+                var pathList = string.Join(Environment.NewLine, assemblies.Select(a => a.Location));
+                throw new Exception($"{message}{Environment.NewLine}{pathList}");
+            }
+            return types;
         }
 
         internal static IReadOnlyList<Type> GetAllTypes(Type type)
@@ -44,16 +51,6 @@ namespace Mastermind.PerformanceTestRunner
             return differentPathsToTheSameFile.FirstOrDefault(f => f.Contains(pathToLookFor));
         }
 
-        private static Type GetSingleType(Assembly assembly, Type type)
-        {
-            var t = GetSingleOrNoType(assembly, type);
-            if (t is null)
-            {
-                throw new Exception($"No type found in {assembly.FullName} that is assignable to {type.Name} and has a public default constructor.");
-            }
-            return t;
-        }
-
         private static Type GetSingleOrNoType(Assembly assembly, Type type)
         {
             var types = assembly
@@ -81,12 +78,12 @@ namespace Mastermind.PerformanceTestRunner
             }
         }
 
-        private static Assembly GetSingleAssembly(string rootDirectory, string assemblySearchName)
+        private static IReadOnlyCollection<Assembly> GetAssembies(string rootDirectory, string assemblySearchName)
         {
-            string assemblyFilePath;
+            IEnumerable<string> assemblyFilePaths;
             if (File.Exists(assemblySearchName))
             {
-                assemblyFilePath = assemblySearchName;
+                assemblyFilePaths = new[] { assemblySearchName };
             }
             else
             {
@@ -97,18 +94,9 @@ namespace Mastermind.PerformanceTestRunner
                 {
                     throw new Exception($"Could not find a dll file with a name containing {assemblySearchName} in {rootDirectory} (including subdirectories)");
                 }
-                else if (paths.Count == 1)
-                {
-                    assemblyFilePath = paths[0];
-                }
-                else
-                {
-                    var message = $"Found multiple dll files with a name containing {assemblySearchName} in {rootDirectory} (including subdirectories).";
-                    var pathList = string.Join(Environment.NewLine, paths);
-                    throw new Exception($"{message}{Environment.NewLine}{pathList}");
-                }
+                assemblyFilePaths = paths;
             }
-            return Assembly.LoadFile(assemblyFilePath);
+            return assemblyFilePaths.Select(Assembly.LoadFile).ToList();
         }
 
         private static string GetMastermindDirectory()

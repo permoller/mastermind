@@ -25,7 +25,7 @@ namespace Mastermind.PerformanceTestRunner
                         }
                         else
                         {
-                            playersToTest.Add(TypeResolver.GetTypeInAssembly(a, typeof(IPlayer)));
+                            playersToTest.AddRange(TypeResolver.GetTypeInAssemblies(a, typeof(IPlayer)));
                         }
                     };
                 }
@@ -39,7 +39,7 @@ namespace Mastermind.PerformanceTestRunner
                         }
                         else
                         {
-                            testsToPerform.Add(TypeResolver.GetTypeInAssembly(a, typeof(IPerformanceTest)));
+                            testsToPerform.AddRange(TypeResolver.GetTypeInAssemblies(a, typeof(IPerformanceTest)));
                         }
                     };
                 }
