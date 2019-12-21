@@ -70,7 +70,6 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
                     // The score of a guess is the minimum number of possibilities it might eliminate from S.
                     // A single pass through S for each unused code of the 1296 will provide a hit count for each colored/white peg score found;
                     var hitCounts = new int[_NumberOfPegsPerLine + 1, _NumberOfPegsPerLine + 1];
-                    hitCounts.Initialize();
                     foreach (var posibleSolution in _PosibleSolutions)
                     {
                         var result = _LineComparer.Compare(possibleGuess, posibleSolution);
