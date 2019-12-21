@@ -59,7 +59,8 @@
             {
                 var numberOfPinsPerLine = random.Next(2, 6);
                 var numberOfDifferentPins = random.Next(1, 12 - numberOfPinsPerLine);
-                yield return new Game(numberOfDifferentPins, numberOfPinsPerLine, 10, Enumerable.Range(0, numberOfPinsPerLine).Select(p => random.Next(0, numberOfDifferentPins)).ToArray());
+                var secret = Enumerable.Range(0, numberOfPinsPerLine).Select(p => random.Next(0, numberOfDifferentPins)).ToArray();
+                yield return new Game(numberOfDifferentPins, numberOfPinsPerLine, 10, secret);
             }
         }
     }
