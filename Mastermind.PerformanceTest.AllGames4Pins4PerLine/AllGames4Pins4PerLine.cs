@@ -60,7 +60,7 @@
                 for (var p1 = 0; p1 < numberOfDifferentPins; p1++)
                     for (var p2 = 0; p2 < numberOfDifferentPins; p2++)
                         for (var p3 = 0; p3 < numberOfDifferentPins; p3++)
-                            yield return new Game(numberOfDifferentPins, 4, 10);
+                            yield return new Game(numberOfDifferentPins, 4, 10, new int[] { p0, p1, p2, p3 });
         }
     }
 }
