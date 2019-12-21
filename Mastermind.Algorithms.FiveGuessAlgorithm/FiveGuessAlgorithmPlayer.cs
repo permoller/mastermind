@@ -123,9 +123,9 @@ namespace Mastermind.Algorithms.FiveGuessAlgorithm
                 return;
             }
             // 5. Otherwise, remove from S any code that would not give the same response if it(the guess) were the code.
+            var previousGuess = _UsedGuesses.Last();
             _PosibleSolutions = _PosibleSolutions.Where(l =>
             {
-                var previousGuess = _UsedGuesses.Last();
                 var r = _LineComparer.Compare(previousGuess, l);
                 return r.NumberOfCorrectPegs == numberOfCorrectsPegs
                 && r.NumberOfPegsAtWrongPosition == numberOfPegsAtWrongPosition;
