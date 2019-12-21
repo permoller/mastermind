@@ -71,7 +71,19 @@
             p.Start();
             var output = p.StandardOutput.ReadToEnd();
             p.WaitForExit();
-            return output.Split(Environment.NewLine).Select(l => Measurement.FromString(l)).ToList();
+            var measurements = new List<Measurement>();
+            foreach (var line in output.Split(Environment.NewLine))
+            {
+                if (Measurement.TryParseMeasurement(line, out var measurement))
+                {
+                    measurements.Add(measurement);
+                }
+                else
+                {
+                    Console.WriteLine(line);
+                }
+            }
+            return measurements;
         }
 
         private static void TestPlayer(Type testType, Type playerType, int seed)

@@ -21,14 +21,28 @@ namespace Mastermind.PerformanceTestRunner
 
         public override string ToString()
         {
-            return $"{IncludeWhenPickingAWinner}:{Name}:{Value.ToString(CultureInfo.InvariantCulture)}";
+            return $"Measurement:{IncludeWhenPickingAWinner}:{Name}:{Value.ToString(CultureInfo.InvariantCulture)}";
+        }
+
+        public static bool TryParseMeasurement(string str, out Measurement measurement)
+        {
+            try
+            {
+                measurement = FromString(str);
+                return true;
+            }
+            catch
+            {
+                measurement = null;
+                return false;
+            }
         }
         public static Measurement FromString(string str)
         {
             try
             {
-                var split = str.Split(":", 3);
-                return new Measurement(bool.Parse(split[0]), split[1], double.Parse(split[2], CultureInfo.InvariantCulture));
+                var split = str.Split(":", 4);
+                return new Measurement(bool.Parse(split[1]), split[2], double.Parse(split[3], CultureInfo.InvariantCulture));
             }
             catch (FormatException e)
             {
