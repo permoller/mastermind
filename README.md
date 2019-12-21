@@ -1,5 +1,5 @@
 # Mastermind
-Implementation of the code breaker game Mastermind.
+Implementation of the code breaker game Mastermind with various algorithms for solving the game and performance tests for comparing the algorithms.
 
 <https://en.wikipedia.org/wiki/Mastermind_(board_game)>
 
